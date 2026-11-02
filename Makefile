@@ -14,14 +14,14 @@ SOURCES = src/main.cpp \
           src/sound_manager.cpp \
           src/score_manager.cpp
 
-# The checks only need the game rules, not the drawing or input code.
+# The checks cover game rules, inputs, settings, score tracking and screen flow.
 TEST_SOURCES = tests/test_sweet_stack.cpp \
                src/game_state.cpp \
                src/game_logic.cpp \
                src/input.cpp \
                src/utilities.cpp \
-               src/sound_manager.cpp
-
+               src/sound_manager.cpp \
+               src/score_manager.cpp
 all: $(TARGET)
 
 $(TARGET): $(SOURCES)

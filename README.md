@@ -20,13 +20,11 @@ Sweet Stack is a C++ bakery puzzle game built with SplashKit. Help customers by 
 ## Gameplay screenshots
 
 ### Rush Hour
-
 Serve each customer before the timer runs out. Customer satisfaction fades as time passes.
 
 ![Rush Hour gameplay with customer order and timer](Resources/images/readme/rush_hour_gameplay.png)
 
 ### Recipe Challenge
-
 Plan merges to complete both requested foods within the move limit.
 
 ![Recipe Challenge board showing two recipe requirements and moves remaining](Resources/images/readme/recipe_challenge.png)
@@ -49,14 +47,23 @@ An order can request more than one item. In Recipe Challenge, each completed req
 - Moving or generating items does not award points.
 - Classic Bakery, Rush Hour and Recipe Challenge save their highest scores to `high_scores.txt` in the project folder. The saved values are ordered Classic Bakery, Rush Hour, then Recipe Challenge.
 
-## Under the hood
+## Technical implementation
 
-- **Data-driven game state:** board contents, current mode, customer orders, score and round progress are kept in `GameState`, separately from drawing and input handling.
-- **Merge and order validation:** a merge advances an order only when both the food category and tier match the requested item. Each requirement is counted once.
-- **Randomised order generation:** Classic Bakery, Rush Hour and Recipe Challenge select varied foods, levels and quantities when a round starts. Beginner keeps its guided order sequence fixed.
-- **Mode-specific pacing:** Rush Hour uses a per-order timer and heart countdown. Recipe Challenge uses a per-customer move limit. Completing an order pauses its transition timer while the customer leaves.
-- **Persistent local records:** the score manager loads and saves three separate Personal Highest Marks in a small text file in the game folder.
-- **Modular C++ structure:** game state, game logic, rendering, input, utilities, sound and score saving are separated into source modules.
+- **C++11 and SplashKit:** the game uses SplashKit for window creation, input, drawing, bitmap and audio loading, random number generation, font rendering and timing. The Makefile links the game against SplashKit.
+- **No separate text or UI library:** the interface loads the bundled `Resources/fonts/Coiny-Regular.ttf` with SplashKit's `load_font()` and draws labels with SplashKit's `draw_text()`. Coiny is a font asset, not a library. If that font cannot be loaded, the drawing code falls back to SplashKit's default text rendering.
+- **Central game state:** `GameState` stores the 4 × 4 board, selected square, current mode, orders, score, timers, pause status and audio settings. Game modes and screen flow are represented with C++ enums, including story, mode selection, gameplay, win and game-over states.
+- **Exact-match merge and order rules:** merging requires the same food category and tier. The result advances one level. An order requirement is counted only when both its category and requested tier match, and each requested item counts once.
+- **Mode-specific order setup:** Beginner uses a fixed teaching sequence. The other modes shuffle the three food categories and generate requested tiers with SplashKit's `rnd()` function. Classic Bakery can request one or two items; Recipe Challenge can request multiple items of its first food plus a second food.
+- **Timer-driven updates:** Rush Hour tracks elapsed time in milliseconds against a 30-second per-order limit and updates customer satisfaction as time passes. Recipe Challenge decrements a move counter after each board move or merge. Completed orders use timed customer-transition states before the next order begins.
+- **Scoring and persistence:** merge points are calculated from the resulting tier, completed orders award a bonus based on their order number, and Rush Hour adds a remaining-time bonus. The score manager uses the C++ standard library's `<fstream>` to read and write `high_scores.txt`; it stores separate Personal Highest Marks for modes 2–4.
+- **Modular source layout:** `game_state` sets up rounds, `game_logic` applies the rules, `game_view` renders screens, `input` handles controls, and the sound and score managers handle their respective tasks. `utilities` contains shared helper functions.
+
+### Libraries and assets
+
+- **External library:** SplashKit.
+- **C++ standard library:** `<fstream>` is used for local high-score file input and output. The project does not use `iostream` or a separate text-rendering library.
+- **Font asset:** Coiny Regular, loaded at runtime through SplashKit. Its licence is included at `Resources/fonts/Coiny-OFL.txt`.
+- **Game assets:** bitmap artwork, background music, sound effects and story dialogue are loaded from `Resources/` through SplashKit.
 
 ## Controls
 
@@ -99,27 +106,40 @@ make clean
 
 ## Project structure
 
-## Project structure
-
 ```text
 SweetStack/
 ├── Resources/
-│   ├── audio/       # Music, dialogue and sound effects
-│   ├── fonts/       # Coiny font and its licence
-│   └── images/      # Bakery, food, customers and README screenshots
+│   ├── audio/
+│   ├── fonts/
+│   └── images/
+│       ├── customers/
+│       ├── food/
+│       └── readme/
 ├── src/
-│   ├── game_state.*     # State and order setup
-│   ├── game_logic.*     # Merging, scoring and mode rules
-│   ├── game_view.*      # Screens and game drawing
-│   ├── input.*          # Keyboard and mouse controls
-│   ├── sound_manager.*  # Music and sound effects
-│   ├── score_manager.*  # Personal Highest Mark persistence
-│   └── utilities.*      # Shared helpers
-├── tests/               # Automated game-rule and screen-state checks
-├── high_scores.txt      # Saved marks for modes 2–4
+│   ├── game_layout.h
+│   ├── game_logic.cpp
+│   ├── game_logic.h
+│   ├── game_state.cpp
+│   ├── game_state.h
+│   ├── game_view.cpp
+│   ├── game_view.h
+│   ├── input.cpp
+│   ├── input.h
+│   ├── main.cpp
+│   ├── score_manager.cpp
+│   ├── score_manager.h
+│   ├── sound_manager.cpp
+│   ├── sound_manager.h
+│   ├── utilities.cpp
+│   └── utilities.h
+├── tests/
+│   └── test_sweet_stack.cpp
+├── .gitattributes
+├── .gitignore
+├── high_scores.txt
 ├── Makefile
 ├── README.md
-└── SweetStack_Consolidated_Code.cpp
+└── SweetStack_Consolidated_Code.pdf
 ```
 ## Credits
 

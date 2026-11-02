@@ -3,6 +3,7 @@
 #include "game_state.h"
 #include "game_logic.h"
 #include "sound_manager.h"
+#include "score_manager.h"
 #include "game_layout.h"
 #include "utilities.h"
 #include "input.h"
@@ -190,6 +191,49 @@ void test_recipe_rejects_higher_tier()
           "an exact-tier recipe merge advances only its matching item");
 }
 
+void test_recipe_food_collection_delay()
+{
+    GameState game = GameState();
+    choose_mode(game, RECIPE_MODE, 0);
+
+    game.orders[0].category = DOUGH;
+    game.orders[0].tier = 1;
+    game.orders[0].quantity = 1;
+    game.orders[0].secondaryCategory = CAKE;
+    game.orders[0].secondaryTier = 1;
+    game.orders[0].secondaryQuantity = 1;
+
+    empty_board(game);
+    place(game, 0, 0, DOUGH, 0);
+    place(game, 0, 1, DOUGH, 0);
+    select_or_move_cake(game, 0, 0, 2000);
+    select_or_move_cake(game, 0, 1, 2000);
+
+    check(game.recipeFirstDelivered == 1 && !game.orderJustCompleted,
+          "Recipe Challenge counts one matching requirement independently");
+    check(game.board[0][1].category == DOUGH && game.recipeFoodPending[0][1],
+          "delivered recipe food remains visible during collection delay");
+
+    int movesAfterDelivery = game.moves;
+    select_or_move_cake(game, 0, 1, 2500);
+    check(game.board[0][1].category == DOUGH && game.moves == movesAfterDelivery,
+          "food being collected cannot be selected or merged again");
+
+    update_game(game, 2000 + ORDER_COMPLETE_MESSAGE_TIME - 1);
+    check(game.board[0][1].category == DOUGH,
+          "recipe food remains until the normal one-second collection time");
+    update_game(game, 2000 + ORDER_COMPLETE_MESSAGE_TIME);
+    check(game.board[0][1].category == NO_ITEM && !game.recipeFoodPending[0][1],
+          "recipe food is collected after the normal one-second delay");
+}
+
+void test_beginner_has_no_high_mark()
+{
+    check(high_score_for_mode(BEGINNER_MODE) == 0,
+          "Beginner does not display a personal highest mark");
+    check(!record_high_score(BEGINNER_MODE, 999999),
+          "Beginner scores are not recorded as personal highest marks");
+}
 void test_customer_leaving()
 {
     GameState game = GameState();   // every value starts at zero
@@ -701,6 +745,8 @@ int main()
     test_move_and_merge();
     test_order_complete();
     test_recipe_rejects_higher_tier();
+    test_recipe_food_collection_delay();
+    test_beginner_has_no_high_mark();
     test_customer_leaving();
     test_final_order_wins();
     test_rush_hour_timer();
