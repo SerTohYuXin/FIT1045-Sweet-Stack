@@ -33,7 +33,7 @@ static int centered_ui_text_x(const string &text, int box_x, int box_width)
 }
 
 // Return a readable name for each food chain.
-static string item_name(ItemCategory category)
+static string item_name(item_category category)
 {
     if (category == DOUGH)
     {
@@ -93,14 +93,13 @@ void load_game_art()
     for (int i = 1; i <= 5; i++)
     {
         string file = "customer_0" + number_text(i);
-        load_picture("customer_" + number_text(i),
-            "Resources/images/customers/" + file + ".png");
+        load_picture("customer_" + number_text(i), "Resources/images/customers/" + file + ".png");
     }
     load_picture("customer_story_1", "Resources/images/customers/customer_01_story.png");
 }
 
 // Convert the current mode into a label for the screen.
-static string mode_name(GameMode mode)
+static string mode_name(game_mode mode)
 {
     if (mode == BEGINNER_MODE)
     {
@@ -120,40 +119,40 @@ static string mode_name(GameMode mode)
 
 // Draw a food item from the atlas.
 // Each row represents a food category and each column represents its tier.
-static void draw_item(ItemCategory category, int tier, int x, int y)
+static void draw_item(item_category category, int tier, int x, int y)
 {
     if (category == NO_ITEM)
     {
         return;
     }
 
-    int atlasRow = 0;
+    int atlas_row = 0;
     if (category == DOUGH)
     {
-        atlasRow = 0;
+        atlas_row = 0;
     }
     else if (category == TART)
     {
-        atlasRow = 1;
+        atlas_row = 1;
     }
     else if (category == CAKE)
     {
-        atlasRow = 2;
+        atlas_row = 2;
     }
 
     // Higher tiers reuse the final picture.
-    int atlasColumn = tier;
-    if (atlasColumn > 3)
+    int atlas_column = tier;
+    if (atlas_column > 3)
     {
-        atlasColumn = 3;
+        atlas_column = 3;
     }
 
-    if (atlasColumn < 0)
+    if (atlas_column < 0)
     {
-        atlasColumn = 0;
+        atlas_column = 0;
     }
 
-    string name = "food_" + number_text(atlasRow) + "_" + number_text(atlasColumn);
+    string name = "food_" + number_text(atlas_row) + "_" + number_text(atlas_column);
     draw_bitmap(name, x + FOOD_MARGIN, y + FOOD_MARGIN);
 }
 
@@ -181,23 +180,23 @@ static void draw_header(const string &subtitle)
 }
 
 // Draw one mode choice on the mode-selection screen.
-static void mode_card(int x, int y, const char *title, const char *lineA, const char *lineB, color accent)
+static void mode_card(int x, int y, const char *title, const char *line_a, const char *line_b, color accent)
 {
     fill_rectangle(rgb(255, 255, 255), x, y, MODE_CARD_WIDTH, MODE_CARD_HEIGHT);
     draw_rectangle(accent, x, y, MODE_CARD_WIDTH, MODE_CARD_HEIGHT);
     draw_game_text(title, accent, x + 20, y + 16);
-    draw_game_text(lineA, rgb(91, 78, 82), x + 20, y + 55);
-    draw_game_text(lineB, rgb(126, 116, 116), x + 20, y + 86);
+    draw_game_text(line_a, rgb(91, 78, 82), x + 20, y + 55);
+    draw_game_text(line_b, rgb(126, 116, 116), x + 20, y + 86);
 }
 
 // Draw all four game-mode choices.
 // Draw one ON/OFF button for the settings panel.
-static void draw_toggle(int y, bool isOn)
+static void draw_toggle(int y, bool is_on)
 {
     color colour = rgb(176, 166, 166);
     string label = "OFF";
 
-    if (isOn)
+    if (is_on)
     {
         colour = rgb(105, 157, 126);
         label = "ON";
@@ -209,9 +208,9 @@ static void draw_toggle(int y, bool isOn)
 }
 
 // Draw the settings panel on top of the mode-selection screen.
-static void draw_settings_panel(const GameState &game)
+static void draw_settings_panel(const game_state &game)
 {
-    int labelX = SETTINGS_BOX_X + 30;
+    int label_x = SETTINGS_BOX_X + 30;
 
     // A darker copy offset behind the panel gives it a shadow.
     fill_rectangle(rgb(121, 69, 84), SETTINGS_BOX_X + 6, SETTINGS_BOX_Y + 6,
@@ -224,11 +223,11 @@ static void draw_settings_panel(const GameState &game)
     draw_game_text("SETTINGS", rgb(121, 69, 84),
         centered_ui_text_x("SETTINGS", SETTINGS_BOX_X, SETTINGS_BOX_WIDTH), SETTINGS_BOX_Y + 20);
 
-    draw_game_text("Background music", rgb(91, 78, 82), labelX, SETTINGS_MUSIC_Y + 12);
-    draw_toggle(SETTINGS_MUSIC_Y, game.musicOn);
+    draw_game_text("Background music", rgb(91, 78, 82), label_x, SETTINGS_MUSIC_Y + 12);
+    draw_toggle(SETTINGS_MUSIC_Y, game.music_on);
 
-    draw_game_text("Sound effects", rgb(91, 78, 82), labelX, SETTINGS_EFFECTS_Y + 12);
-    draw_toggle(SETTINGS_EFFECTS_Y, game.soundEffectsOn);
+    draw_game_text("Sound effects", rgb(91, 78, 82), label_x, SETTINGS_EFFECTS_Y + 12);
+    draw_toggle(SETTINGS_EFFECTS_Y, game.sound_effects_on);
 
     draw_game_text("Changes stay until you change them.", rgb(126, 116, 116),
         centered_ui_text_x("Changes stay until you change them.", SETTINGS_BOX_X, SETTINGS_BOX_WIDTH),
@@ -240,7 +239,7 @@ static void draw_settings_panel(const GameState &game)
         centered_ui_text_x("CLOSE", SETTINGS_CLOSE_X, SETTINGS_CLOSE_WIDTH), SETTINGS_CLOSE_Y + 14);
 }
 
-static void draw_menu(const GameState &game)
+static void draw_menu(const game_state &game)
 {
     draw_header("Choose how you want to bake");
 
@@ -264,16 +263,16 @@ static void draw_menu(const GameState &game)
     fill_rectangle(rgb(121, 69, 84), 350, 535, 260, 56);
     draw_game_text("CLICK A MODE (OR PRESS 1-4)", rgb(255, 255, 255), 372, 554);
 
-    if (game.settingsOpen)
+    if (game.settings_open)
         draw_settings_panel(game);
 }
 
 // Draw the story scene with the shop owner and the customer.
-static void draw_story(const GameState &game)
+static void draw_story(const game_state &game)
 {
     draw_header("A little story before baking");
 
-    if (game.storyLine == 1)
+    if (game.story_line == 1)
     {
         draw_character("customer_story_1", 52, 212);
     }
@@ -284,7 +283,7 @@ static void draw_story(const GameState &game)
 
     // Name plate under the speaker, so the player knows who is talking.
     string speaker = "MIA - SHOP OWNER";
-    if (game.storyLine == 1)
+    if (game.story_line == 1)
         speaker = "FESTIVAL GUEST";
 
     draw_game_text(speaker, rgb(121, 69, 84),
@@ -294,13 +293,13 @@ static void draw_story(const GameState &game)
     draw_rectangle(rgb(231, 207, 207), 295, 232, 570, 184);
     draw_game_text("Mia's Moonlight Bakery", rgb(121, 69, 84), 325, 253);
 
-    if (game.storyLine == 0)
+    if (game.story_line == 0)
     {
         draw_game_text("Mia: Hi, I'm Mia, the baker who runs this shop.", rgb(91, 78, 82), 325, 289);
         draw_game_text("The Moonlight Festival is tonight!", rgb(91, 78, 82), 325, 325);
         draw_game_text("Our bakery has just reopened.", rgb(91, 78, 82), 325, 358);
     }
-    else if (game.storyLine == 1)
+    else if (game.story_line == 1)
     {
         draw_game_text("Customer: We need treats for the festival.", rgb(91, 78, 82), 325, 299);
         draw_game_text("Can you help us prepare the orders?", rgb(91, 78, 82), 325, 330);
@@ -317,23 +316,23 @@ static void draw_story(const GameState &game)
 }
 
 // Draw one generator button and a small preview of the food it creates.
-static void draw_generator_button(const char *label, ItemCategory category, int x)
+static void draw_generator_button(const char *label, item_category category, int x)
 {
     fill_rectangle(rgb(255, 242, 235), x, GENERATOR_Y, GENERATOR_WIDTH, GENERATOR_HEIGHT);
     draw_rectangle(rgb(201, 157, 145), x, GENERATOR_Y, GENERATOR_WIDTH, GENERATOR_HEIGHT);
 
     // The generator atlas has three square sprites in one horizontal row.
-    int spriteColumn = 0;
+    int sprite_column = 0;
     if (category == TART)
     {
-        spriteColumn = 1;
+        sprite_column = 1;
     }
     else if (category == CAKE)
     {
-        spriteColumn = 2;
+        sprite_column = 2;
     }
 
-    draw_bitmap("generator_" + number_text(spriteColumn), x + 4, GENERATOR_Y + 4);
+    draw_bitmap("generator_" + number_text(sprite_column), x + 4, GENERATOR_Y + 4);
     draw_game_text(label, rgb(121, 69, 84), x + 58, GENERATOR_Y + 19);
 }
 
@@ -346,39 +345,39 @@ static void draw_generators()
 }
 
 // Beginner mode arrows point to a useful matching pair, or the needed generator.
-static int draw_beginner_guidance(const GameState &game)
+static int draw_beginner_guidance(const game_state &game)
 {
-    if (game.mode != BEGINNER_MODE || game.orderJustCompleted || game.orderIndex >= order_count_for_mode(game.mode))
+    if (game.mode != BEGINNER_MODE || game.order_just_completed || game.order_index >= order_count_for_mode(game.mode))
         return 3;
 
-    ItemCategory needed = current_order_category(game);
-    int requiredTier = current_order_tier(game);
-    int firstRow = -1, firstCol = -1, secondRow = -1, secondCol = -1;
+    item_category needed = current_order_category(game);
+    int required_tier = current_order_tier(game);
+    int first_row = -1, first_col = -1, second_row = -1, second_col = -1;
 
-    if (game.selectedRow >= 0 && game.selectedColumn >= 0)
+    if (game.selected_row >= 0 && game.selected_column >= 0)
     {
-        BoardItem selected = game.board[game.selectedRow][game.selectedColumn];
-        if (selected.category == needed && selected.tier < requiredTier)
+        board_item selected = game.board[game.selected_row][game.selected_column];
+        if (selected.category == needed && selected.tier < required_tier)
         {
             for (int row = 0; row < GRID_SIZE; row++)
             {
                 for (int col = 0; col < GRID_SIZE; col++)
                 {
-                    BoardItem item = game.board[row][col];
-                    if ((row != game.selectedRow || col != game.selectedColumn) &&
+                    board_item item = game.board[row][col];
+                    if ((row != game.selected_row || col != game.selected_column) &&
                         item.category == selected.category && item.tier == selected.tier)
                     {
-                        secondRow = row;
-                        secondCol = col;
+                        second_row = row;
+                        second_col = col;
                         break;
                     }
                 }
-                if (secondRow >= 0) break;
+                if (second_row >= 0) break;
             }
-            if (secondRow >= 0)
+            if (second_row >= 0)
             {
-                int x = BOARD_X + secondCol * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
-                int y = BOARD_Y + secondRow * (CELL_SIZE + CELL_GAP);
+                int x = BOARD_X + second_col * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
+                int y = BOARD_Y + second_row * (CELL_SIZE + CELL_GAP);
                 draw_line(rgb(221, 142, 66), x, y - 28, x, y - 13);
                 fill_triangle(rgb(221, 142, 66), x - 8, y - 17, x + 8, y - 17, x, y - 4);
                 return 2;
@@ -390,49 +389,49 @@ static int draw_beginner_guidance(const GameState &game)
     {
         for (int col = 0; col < GRID_SIZE; col++)
         {
-            BoardItem first = game.board[row][col];
-            if (first.category != needed || first.tier >= requiredTier) continue;
-            for (int otherRow = row; otherRow < GRID_SIZE; otherRow++)
+            board_item first = game.board[row][col];
+            if (first.category != needed || first.tier >= required_tier) continue;
+            for (int other_row = row; other_row < GRID_SIZE; other_row++)
             {
-                int startCol = (otherRow == row) ? col + 1 : 0;
-                for (int otherCol = startCol; otherCol < GRID_SIZE; otherCol++)
+                int start_col = (other_row == row) ? col + 1 : 0;
+                for (int other_col = start_col; other_col < GRID_SIZE; other_col++)
                 {
-                    BoardItem second = game.board[otherRow][otherCol];
+                    board_item second = game.board[other_row][other_col];
                     if (second.category == first.category && second.tier == first.tier)
                     {
-                        firstRow = row; firstCol = col;
-                        secondRow = otherRow; secondCol = otherCol;
+                        first_row = row; first_col = col;
+                        second_row = other_row; second_col = other_col;
                         break;
                     }
                 }
-                if (secondRow >= 0) break;
+                if (second_row >= 0) break;
             }
-            if (secondRow >= 0) break;
+            if (second_row >= 0) break;
         }
-        if (secondRow >= 0) break;
+        if (second_row >= 0) break;
     }
 
-    if (secondRow >= 0)
+    if (second_row >= 0)
     {
-        int firstX = BOARD_X + firstCol * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
-        int firstY = BOARD_Y + firstRow * (CELL_SIZE + CELL_GAP);
-        int secondX = BOARD_X + secondCol * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
-        int secondY = BOARD_Y + secondRow * (CELL_SIZE + CELL_GAP);
-        draw_line(rgb(221, 142, 66), firstX, firstY - 28, firstX, firstY - 13);
-        fill_triangle(rgb(221, 142, 66), firstX - 8, firstY - 17, firstX + 8, firstY - 17, firstX, firstY - 4);
-        draw_line(rgb(221, 142, 66), secondX, secondY - 28, secondX, secondY - 13);
-        fill_triangle(rgb(221, 142, 66), secondX - 8, secondY - 17, secondX + 8, secondY - 17, secondX, secondY - 4);
+        int first_x = BOARD_X + first_col * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
+        int first_y = BOARD_Y + first_row * (CELL_SIZE + CELL_GAP);
+        int second_x = BOARD_X + second_col * (CELL_SIZE + CELL_GAP) + CELL_SIZE / 2;
+        int second_y = BOARD_Y + second_row * (CELL_SIZE + CELL_GAP);
+        draw_line(rgb(221, 142, 66), first_x, first_y - 28, first_x, first_y - 13);
+        fill_triangle(rgb(221, 142, 66), first_x - 8, first_y - 17, first_x + 8, first_y - 17, first_x, first_y - 4);
+        draw_line(rgb(221, 142, 66), second_x, second_y - 28, second_x, second_y - 13);
+        fill_triangle(rgb(221, 142, 66), second_x - 8, second_y - 17, second_x + 8, second_y - 17, second_x, second_y - 4);
         return 1;
     }
 
-    bool hasEmpty = false;
+    bool has_empty = false;
     for (int row = 0; row < GRID_SIZE; row++)
         for (int col = 0; col < GRID_SIZE; col++)
-            if (game.board[row][col].category == NO_ITEM) hasEmpty = true;
-    if (!hasEmpty) return 3;
+            if (game.board[row][col].category == NO_ITEM) has_empty = true;
+    if (!has_empty) return 3;
 
-    int buttonX = (needed == DOUGH) ? DOUGH_BUTTON_X : (needed == TART) ? TART_BUTTON_X : CAKE_BUTTON_X;
-    int x = buttonX + GENERATOR_WIDTH / 2;
+    int button_x = (needed == DOUGH) ? DOUGH_BUTTON_X : (needed == TART) ? TART_BUTTON_X : CAKE_BUTTON_X;
+    int x = button_x + GENERATOR_WIDTH / 2;
     int y = GENERATOR_Y;
     draw_line(rgb(221, 142, 66), x, y - 28, x, y - 13);
     fill_triangle(rgb(221, 142, 66), x - 8, y - 17, x + 8, y - 17, x, y - 4);
@@ -440,10 +439,10 @@ static int draw_beginner_guidance(const GameState &game)
 }
 
 // Draw the customer on the left and their order on the right.
-static void draw_customer_and_order(const GameState &game, unsigned int now)
+static void draw_customer_and_order(const game_state &game, unsigned int now)
 {
     bool leaving = customer_has_left(game, now);
-    int textX = ORDER_BOX_X + 16;
+    int text_x = ORDER_BOX_X + 16;
 
     // CUSTOMER box and portrait (the portrait is missing once the customer has left).
     fill_rectangle(rgb(255, 255, 255), RIGHT_X, CUSTOMER_BOX_Y, CUSTOMER_BOX_WIDTH, CUSTOMER_BOX_HEIGHT);
@@ -451,8 +450,8 @@ static void draw_customer_and_order(const GameState &game, unsigned int now)
 
     if (!leaving)
     {
-        int customerNumber = (game.orderIndex % 5) + 1;
-        draw_character("customer_" + number_text(customerNumber), RIGHT_X + 4, CUSTOMER_BOX_Y + 9);
+        int customer_number = (game.order_index % 5) + 1;
+        draw_character("customer_" + number_text(customer_number), RIGHT_X + 4, CUSTOMER_BOX_Y + 9);
     }
 
     // ORDER box, right next to the customer.
@@ -463,147 +462,147 @@ static void draw_customer_and_order(const GameState &game, unsigned int now)
 
     if (leaving)
     {
-        draw_game_text("Next customer...", rgb(126, 116, 116), textX, CUSTOMER_BOX_Y + 60);
+        draw_game_text("Next customer...", rgb(126, 116, 116), text_x, CUSTOMER_BOX_Y + 60);
         return;
     }
 
-    if (game.orderJustCompleted)
+    if (game.order_just_completed)
     {
-        draw_game_text("ORDER COMPLETE!", rgb(105, 157, 126), textX, CUSTOMER_BOX_Y + 42);
-        draw_game_text("Thank you!", rgb(91, 78, 82), textX, CUSTOMER_BOX_Y + 72);
+        draw_game_text("ORDER COMPLETE!", rgb(105, 157, 126), text_x, CUSTOMER_BOX_Y + 42);
+        draw_game_text("Thank you!", rgb(91, 78, 82), text_x, CUSTOMER_BOX_Y + 72);
         return;
     }
 
-    draw_game_text("CUSTOMER ORDER", rgb(121, 69, 84), textX, CUSTOMER_BOX_Y + 12);
+    draw_game_text("CUSTOMER ORDER", rgb(121, 69, 84), text_x, CUSTOMER_BOX_Y + 12);
 
-    string orderText = number_text(current_order_quantity(game));
-    orderText += " x level ";
-    orderText += number_text(current_order_tier(game) + 1);
-    orderText += " ";
-    orderText += item_name(current_order_category(game));
+    string order_text = number_text(current_order_quantity(game));
+    order_text += " x level ";
+    order_text += number_text(current_order_tier(game) + 1);
+    order_text += " ";
+    order_text += item_name(current_order_category(game));
 
-    draw_game_text(orderText, rgb(91, 78, 82), textX, CUSTOMER_BOX_Y + 42);
+    draw_game_text(order_text, rgb(91, 78, 82), text_x, CUSTOMER_BOX_Y + 42);
 
-    int firstReady = game.deliveredCount;
+    int first_ready = game.delivered_count;
     if (game.mode == RECIPE_MODE)
     {
-        firstReady = game.recipeFirstDelivered;
+        first_ready = game.recipe_first_delivered;
     }
 
-    string readyText = "Ready: ";
-    readyText += number_text(firstReady);
-    readyText += " / ";
-    readyText += number_text(current_order_quantity(game));
+    string ready_text = "Ready: ";
+    ready_text += number_text(first_ready);
+    ready_text += " / ";
+    ready_text += number_text(current_order_quantity(game));
 
-    draw_game_text(readyText, rgb(126, 116, 116), textX, CUSTOMER_BOX_Y + 68);
+    draw_game_text(ready_text, rgb(126, 116, 116), text_x, CUSTOMER_BOX_Y + 68);
 
     if (game.mode == RECIPE_MODE)
     {
-        string secondOrderText = "+ ";
-        secondOrderText += number_text(current_order_secondary_quantity(game));
-        secondOrderText += " x level ";
-        secondOrderText += number_text(current_order_secondary_tier(game) + 1);
-        secondOrderText += " ";
-        secondOrderText += item_name(current_order_secondary_category(game));
+        string second_order_text = "+ ";
+        second_order_text += number_text(current_order_secondary_quantity(game));
+        second_order_text += " x level ";
+        second_order_text += number_text(current_order_secondary_tier(game) + 1);
+        second_order_text += " ";
+        second_order_text += item_name(current_order_secondary_category(game));
 
-        draw_game_text(secondOrderText, rgb(91, 78, 82), textX, CUSTOMER_BOX_Y + 96);
+        draw_game_text(second_order_text, rgb(91, 78, 82), text_x, CUSTOMER_BOX_Y + 96);
 
-        string secondReadyText = "Ready: ";
-        secondReadyText += number_text(game.recipeSecondDelivered);
-        secondReadyText += " / ";
-        secondReadyText += number_text(current_order_secondary_quantity(game));
+        string second_ready_text = "Ready: ";
+        second_ready_text += number_text(game.recipe_second_delivered);
+        second_ready_text += " / ";
+        second_ready_text += number_text(current_order_secondary_quantity(game));
 
-        draw_game_text(secondReadyText, rgb(126, 116, 116), textX, CUSTOMER_BOX_Y + 120);
+        draw_game_text(second_ready_text, rgb(126, 116, 116), text_x, CUSTOMER_BOX_Y + 120);
     }
 }
 
 // Draw the progress bar used for the Rush Hour timer and the Recipe moves.
-static void draw_bar(color barColour, int x, int y, double fraction)
+static void draw_bar(color bar_colour, int x, int y, double fraction)
 {
     if (fraction < 0) fraction = 0;
     if (fraction > 1) fraction = 1;
 
     fill_rectangle(rgb(245, 229, 225), x, y, 260, 19);
-    fill_rectangle(barColour, x, y, (int)(260.0 * fraction), 19);
+    fill_rectangle(bar_colour, x, y, (int)(260.0 * fraction), 19);
 }
 
 // The panel under the order. It shows what matters in the chosen mode:
 //   Rush Hour - the customer's hearts and the 60 second timer
 //   Recipe - how many moves are left
 //   Beginner/Classic - customer number and no timer.
-static void draw_status_panel(const GameState &game, unsigned int now)
+static void draw_status_panel(const game_state &game, unsigned int now)
 {
-    int textX = RIGHT_X + 20;
+    int text_x = RIGHT_X + 20;
     fill_rectangle(rgb(255, 255, 255), RIGHT_X, STATUS_BOX_Y, RIGHT_WIDTH, STATUS_BOX_HEIGHT);
     draw_rectangle(rgb(236, 218, 218), RIGHT_X, STATUS_BOX_Y, RIGHT_WIDTH, STATUS_BOX_HEIGHT);
 
     if (game.mode == RUSH_MODE)
     {
-        draw_game_text("CUSTOMER SATISFACTION", rgb(121, 69, 84), textX, STATUS_BOX_Y + 15);
+        draw_game_text("CUSTOMER SATISFACTION", rgb(121, 69, 84), text_x, STATUS_BOX_Y + 15);
 
         for (int heart = 0; heart < MAX_HEARTS; heart++)
         {
-            color heartColour = rgb(221, 211, 211);
+            color heart_colour = rgb(221, 211, 211);
             if (heart < game.satisfaction)
-                heartColour = rgb(229, 87, 116);
-            fill_circle(heartColour, RIGHT_X + 39 + heart * 36, STATUS_BOX_Y + 59, 12);
+                heart_colour = rgb(229, 87, 116);
+            fill_circle(heart_colour, RIGHT_X + 39 + heart * 36, STATUS_BOX_Y + 59, 12);
         }
 
         unsigned int left = current_order_time_left(game, now);
-        color timerColour = rgb(228, 167, 101);
+        color timer_colour = rgb(228, 167, 101);
         if (left < 15000)
-            timerColour = rgb(221, 94, 103);
+            timer_colour = rgb(221, 94, 103);
 
-        draw_bar(timerColour, textX, STATUS_BOX_Y + 86, (double)left / ORDER_TIME_LIMIT);
-        draw_game_text(number_text(left / 1000) + " seconds left", rgb(91, 78, 82), textX, STATUS_BOX_Y + 112);
+        draw_bar(timer_colour, text_x, STATUS_BOX_Y + 86, (double)left / ORDER_TIME_LIMIT);
+        draw_game_text(number_text(left / 1000) + " seconds left", rgb(91, 78, 82), text_x, STATUS_BOX_Y + 112);
     }
     else if (game.mode == RECIPE_MODE)
     {
-        draw_game_text("MOVES LEFT", rgb(121, 69, 84), textX, STATUS_BOX_Y + 15);
-        draw_game_text(number_text(game.movesLeft) + " of " + number_text(current_move_limit(game)) + " moves", rgb(91, 78, 82), textX, STATUS_BOX_Y + 48);
+        draw_game_text("MOVES LEFT", rgb(121, 69, 84), text_x, STATUS_BOX_Y + 15);
+        draw_game_text(number_text(game.moves_left) + " of " + number_text(current_move_limit(game)) + " moves", rgb(91, 78, 82), text_x, STATUS_BOX_Y + 48);
 
-        color movesColour = rgb(165, 117, 179);
-        if (game.movesLeft <= 5)
-            movesColour = rgb(221, 94, 103);
+        color moves_colour = rgb(165, 117, 179);
+        if (game.moves_left <= 5)
+            moves_colour = rgb(221, 94, 103);
 
-        draw_bar(movesColour, textX, STATUS_BOX_Y + 78, (double)game.movesLeft / current_move_limit(game));
-        draw_game_text("Out of moves ends the game.", rgb(126, 116, 116), textX, STATUS_BOX_Y + 106);
+        draw_bar(moves_colour, text_x, STATUS_BOX_Y + 78, (double)game.moves_left / current_move_limit(game));
+        draw_game_text("Out of moves ends the game.", rgb(126, 116, 116), text_x, STATUS_BOX_Y + 106);
     }
     else
     {
-        draw_game_text("CUSTOMER " + number_text(game.orderIndex + 1) + " OF " + number_text(order_count_for_mode(game.mode)), rgb(121, 69, 84), textX, STATUS_BOX_Y + 15);
-        draw_game_text("No timer in this mode.", rgb(91, 78, 82), textX, STATUS_BOX_Y + 55);
-        draw_game_text("Take your time!", rgb(126, 116, 116), textX, STATUS_BOX_Y + 85);
+        draw_game_text("CUSTOMER " + number_text(game.order_index + 1) + " OF " + number_text(order_count_for_mode(game.mode)), rgb(121, 69, 84), text_x, STATUS_BOX_Y + 15);
+        draw_game_text("No timer in this mode.", rgb(91, 78, 82), text_x, STATUS_BOX_Y + 55);
+        draw_game_text("Take your time!", rgb(126, 116, 116), text_x, STATUS_BOX_Y + 85);
     }
 }
 
 // Show the selected food and its requested level in every game mode.
-static void draw_selection_panel(const GameState &game)
+static void draw_selection_panel(const game_state &game)
 {
     fill_rectangle(rgb(255, 255, 255), RIGHT_X, 470, RIGHT_WIDTH, 130);
     draw_rectangle(rgb(236, 218, 218), RIGHT_X, 470, RIGHT_WIDTH, 130);
     draw_game_text("SELECTED FOOD", rgb(121, 69, 84), RIGHT_X + 20, 482);
 
-    if (game.selectedRow >= 0 && game.selectedColumn >= 0)
+    if (game.selected_row >= 0 && game.selected_column >= 0)
     {
-        BoardItem selected = game.board[game.selectedRow][game.selectedColumn];
+        board_item selected = game.board[game.selected_row][game.selected_column];
         draw_item(selected.category, selected.tier, RIGHT_X + 8, 488);
         draw_game_text(item_name(selected.category), rgb(91, 78, 82), RIGHT_X + 126, 502);
         draw_game_text("Level " + number_text(selected.tier + 1), rgb(91, 78, 82), RIGHT_X + 126, 528);
-        int neededTier = -1;
+        int needed_tier = -1;
         if (selected.category == current_order_category(game))
-            neededTier = current_order_tier(game);
+            needed_tier = current_order_tier(game);
         else if (game.mode == RECIPE_MODE && selected.category == current_order_secondary_category(game))
-            neededTier = current_order_secondary_tier(game);
+            needed_tier = current_order_secondary_tier(game);
 
-        if (neededTier >= 0)
-            draw_game_text("Order needs level " + number_text(neededTier + 1) + ".", rgb(126, 116, 116), RIGHT_X + 126, 554);
+        if (needed_tier >= 0)
+            draw_game_text("Order needs level " + number_text(needed_tier + 1) + ".", rgb(126, 116, 116), RIGHT_X + 126, 554);
         else
             draw_game_text("Not part of this order.", rgb(126, 116, 116), RIGHT_X + 126, 554);
     }
-    else if (game.lastAction != "")
+    else if (game.last_action != "")
     {
-        draw_game_text(game.lastAction, rgb(91, 78, 82), RIGHT_X + 20, 528);
+        draw_game_text(game.last_action, rgb(91, 78, 82), RIGHT_X + 20, 528);
     }
     else
     {
@@ -613,7 +612,7 @@ static void draw_selection_panel(const GameState &game)
 }
 
 // Draw the game board, customer order, and status information.
-static void draw_play(const GameState &game, unsigned int now)
+static void draw_play(const game_state &game, unsigned int now)
 {
     draw_header(mode_name(game.mode));
 
@@ -625,8 +624,8 @@ static void draw_play(const GameState &game, unsigned int now)
     draw_game_text("MOVES  " + number_text(game.moves), rgb(121, 69, 84), 690, 66);
 
     fill_rectangle(rgb(121, 69, 84), PAUSE_BUTTON_X, PAUSE_BUTTON_Y, PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT);
-    string pauseLabel = game.paused ? "RESUME" : "PAUSE";
-    draw_game_text(pauseLabel, rgb(255, 255, 255), centered_ui_text_x(pauseLabel, PAUSE_BUTTON_X, PAUSE_BUTTON_WIDTH), PAUSE_BUTTON_Y + 10);
+    string pause_label = game.paused ? "RESUME" : "PAUSE";
+    draw_game_text(pause_label, rgb(255, 255, 255), centered_ui_text_x(pause_label, PAUSE_BUTTON_X, PAUSE_BUTTON_WIDTH), PAUSE_BUTTON_Y + 10);
 
     draw_game_text("BAKERY TRAY", rgb(121, 69, 84), BOARD_X, 130);
 
@@ -639,9 +638,9 @@ static void draw_play(const GameState &game, unsigned int now)
             fill_rectangle(rgb(255, 255, 255), x, y, CELL_SIZE, CELL_SIZE);
             draw_rectangle(rgb(239, 224, 220), x, y, CELL_SIZE, CELL_SIZE);
 
-            BoardItem item = game.board[row][col];
+            board_item item = game.board[row][col];
             draw_item(item.category, item.tier, x, y);
-            if (row == game.selectedRow && col == game.selectedColumn)
+            if (row == game.selected_row && col == game.selected_column)
             {
                 fill_rectangle(rgba_color(211, 93, 127, 45), x, y, CELL_SIZE, CELL_SIZE);
                 draw_rectangle(rgb(211, 93, 127), x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
@@ -674,7 +673,7 @@ static void draw_end_line(const string &text, color colour, int y)
 }
 
 // Draw the win or game-over screen on a white panel so the text is easy to read.
-static void draw_end(const GameState &game)
+static void draw_end(const game_state &game)
 {
     draw_header(mode_name(game.mode) + " RESULTS");
     fill_rectangle(rgb(255, 255, 255), END_BOX_X, END_BOX_Y, END_BOX_WIDTH, END_BOX_HEIGHT);
@@ -685,12 +684,12 @@ static void draw_end(const GameState &game)
         draw_end_line("FESTIVAL SAVED!", rgb(105, 157, 126), END_BOX_Y + 36);
         draw_end_line("You served every order at Mia's bakery.", rgb(91, 78, 82), END_BOX_Y + 86);
     }
-    else if (game.lostByTimer)
+    else if (game.lost_by_timer)
     {
         draw_end_line("THE CUSTOMER LEFT", rgb(164, 78, 89), END_BOX_Y + 36);
         draw_end_line("They waited too long for their order.", rgb(91, 78, 82), END_BOX_Y + 86);
     }
-    else if (game.lostByMoveLimit)
+    else if (game.lost_by_move_limit)
     {
         draw_end_line("OUT OF MOVES", rgb(164, 78, 89), END_BOX_Y + 36);
         draw_end_line("You ran out of moves for this recipe.", rgb(91, 78, 82), END_BOX_Y + 86);
@@ -705,7 +704,7 @@ static void draw_end(const GameState &game)
     draw_end_line("Final score: " + number_text(game.score), rgb(91, 78, 82), END_BOX_Y + 126);
     if (game.mode != BEGINNER_MODE)
     {
-        if (game.newHighScore)
+        if (game.new_high_score)
             draw_end_line("NEW PERSONAL HIGHEST MARK!", rgb(105, 157, 126), END_BOX_Y + 157);
         else
             draw_end_line("Personal highest mark: " + number_text(high_score_for_mode(game.mode)), rgb(146, 109, 116), END_BOX_Y + 157);
@@ -721,7 +720,7 @@ static void draw_end(const GameState &game)
 }
 
 // Draw the background and whichever screen is currently active.
-void draw_game(const GameState &game, unsigned int now)
+void draw_game(const game_state &game, unsigned int now)
 {
     clear_screen(rgb(255, 247, 241));
     // The background picture is already 960 x 700, the same size as the window.

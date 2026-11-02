@@ -38,7 +38,7 @@ Review the final score and Personal Highest Mark, then replay or return to the m
 
 The board contains 16 squares. Use a food generator to add an item, then move items or merge two matching items into the next level. For example, two Level 1 dough items merge into Level 2 dough. Continue merging until you create the exact item requested by the customer.
 
-An order can request more than one item. In Recipe Challenge, each completed requirement is counted separately and the delivered item is collected after the same one-second acknowledgement used for regular orders. Items of the wrong category or level do not satisfy the order.
+An order can request more than one item. Exact matches already on the board are counted automatically when the next customer arrives. In Recipe Challenge, each completed requirement is counted separately and the delivered item is collected after the same one-second acknowledgement used for regular orders. Items of the wrong category or level do not satisfy the order.
 
 ### Scoring
 - A merge awards **10 points per resulting level**: Level 2 gives 10 points, Level 3 gives 20, and Level 4 gives 30.
@@ -51,7 +51,7 @@ An order can request more than one item. In Recipe Challenge, each completed req
 
 - **C++11 and SplashKit:** the game uses SplashKit for window creation, input, drawing, bitmap and audio loading, random number generation, font rendering and timing. The Makefile links the game against SplashKit.
 - **No separate text or UI library:** the interface loads the bundled `Resources/fonts/Coiny-Regular.ttf` with SplashKit's `load_font()` and draws labels with SplashKit's `draw_text()`. Coiny is a font asset, not a library. If that font cannot be loaded, the drawing code falls back to SplashKit's default text rendering.
-- **Central game state:** `GameState` stores the 4 × 4 board, selected square, current mode, orders, score, timers, pause status and audio settings. Game modes and screen flow are represented with C++ enums, including story, mode selection, gameplay, win and game-over states.
+- **Central game state:** `game_state` stores the 4 × 4 board, selected square, current mode, orders, score, timers, pause status and audio settings. Game modes and screen flow are represented with C++ enums, including story, mode selection, gameplay, win and game-over states.
 - **Exact-match merge and order rules:** merging requires the same food category and tier. The result advances one level. An order requirement is counted only when both its category and requested tier match, and each requested item counts once.
 - **Mode-specific order setup:** Beginner uses a fixed teaching sequence. The other modes shuffle the three food categories and generate requested tiers with SplashKit's `rnd()` function. Classic Bakery can request one or two items; Recipe Challenge can request multiple items of its first food plus a second food.
 - **Timer-driven updates:** Rush Hour tracks elapsed time in milliseconds against a 30-second per-order limit and updates customer satisfaction as time passes. Recipe Challenge decrements a move counter after each board move or merge. Completed orders use timed customer-transition states before the next order begins.

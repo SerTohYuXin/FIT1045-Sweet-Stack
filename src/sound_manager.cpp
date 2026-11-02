@@ -26,10 +26,10 @@ void stop_story_voice()
     stop_sound_effect("story_mia_invitation");
 }
 
-void play_story_voice(const GameState &game, int story_line)
+void play_story_voice(const game_state &game, int story_line)
 {
     stop_story_voice();
-    if (!game.soundEffectsOn) return;
+    if (!game.sound_effects_on) return;
 
     if (story_line == 0)
         play_sound_effect("story_mia_intro", 0.85);
@@ -40,44 +40,44 @@ void play_story_voice(const GameState &game, int story_line)
 }
 
 // Play one effect, but only when the player has sound effects switched on.
-static void play_effect(const GameState &game, const string &name, double volume)
+static void play_effect(const game_state &game, const string &name, double volume)
 {
-    if (game.soundEffectsOn)
+    if (game.sound_effects_on)
         play_sound_effect(name, volume);
 }
 
 // Keep effects slightly below full volume so they do not overpower the game.
-void play_merge_sound(const GameState &game)
+void play_merge_sound(const game_state &game)
 {
     play_effect(game, "merge", 0.75);
 }
 
-void play_order_sound(const GameState &game)
+void play_order_sound(const game_state &game)
 {
     play_effect(game, "order", 0.7);
 }
 
-void play_timeout_sound(const GameState &game)
+void play_timeout_sound(const game_state &game)
 {
     play_effect(game, "timeout", 0.55);
 }
 
-void play_drop_sound(const GameState &game)
+void play_drop_sound(const game_state &game)
 {
     play_effect(game, "drop", 0.45);
 }
 
-void play_click_sound(const GameState &game)
+void play_click_sound(const game_state &game)
 {
     play_effect(game, "click", 0.45);
 }
 
-void play_question_sound(const GameState &game)
+void play_question_sound(const game_state &game)
 {
     play_effect(game, "question", 0.45);
 }
 
-void play_tick_sound(const GameState &game)
+void play_tick_sound(const game_state &game)
 {
     play_effect(game, "tick", 0.35);
 }
@@ -95,9 +95,9 @@ void play_background_music()
 }
 
 // The music keeps its place in the song while it is paused.
-void apply_music_setting(const GameState &game)
+void apply_music_setting(const game_state &game)
 {
-    if (game.musicOn)
+    if (game.music_on)
         resume_music();
     else
         pause_music();

@@ -8,24 +8,24 @@
 #include "score_manager.h"
 #include "game_layout.h"
 
-static void record_round_if_finished(GameState &game)
+static void record_round_if_finished(game_state &game)
 {
-    bool hasEnded = (game.screen == WON_SCREEN || game.screen == GAME_OVER_SCREEN);
-    if (hasEnded && !game.resultRecorded)
+    bool has_ended = (game.screen == WON_SCREEN || game.screen == GAME_OVER_SCREEN);
+    if (has_ended && !game.result_recorded)
     {
-        game.newHighScore = record_high_score(game.mode, game.score);
-        game.resultRecorded = true;
+        game.new_high_score = record_high_score(game.mode, game.score);
+        game.result_recorded = true;
     }
 }
 
 int main()
 {
-    GameState game;
+    game_state game;
     start_new_game(game);
     open_window("Sweet Stack - Cake Merge", WINDOW_WIDTH, WINDOW_HEIGHT);
     load_game_art();
     load_game_sounds();
-    play_story_voice(game, game.storyLine);
+    play_story_voice(game, game.story_line);
     load_background_music();
     play_background_music();
 

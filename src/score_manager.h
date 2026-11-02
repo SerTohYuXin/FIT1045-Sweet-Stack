@@ -4,7 +4,7 @@
 
 #include "game_state.h"
 
-int high_score_for_mode(GameMode mode);
-bool record_high_score(GameMode mode, int score);
+int high_score_for_mode(game_mode mode);
+bool record_high_score(game_mode mode, int score);
 
 #endif

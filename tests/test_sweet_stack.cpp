@@ -22,7 +22,7 @@ void check(bool condition, string test_name)
 }
 
 // Count how many board squares hold food.
-int count_items(const GameState &game)
+int count_items(const game_state &game)
 {
     int count = 0;
     for (int row = 0; row < GRID_SIZE; row++)
@@ -33,7 +33,7 @@ int count_items(const GameState &game)
 }
 
 // Put one item on the board by hand.
-void place(GameState &game, int row, int col, ItemCategory category, int tier)
+void place(game_state &game, int row, int col, item_category category, int tier)
 {
     game.board[row][col].category = category;
     game.board[row][col].tier = tier;
@@ -41,7 +41,7 @@ void place(GameState &game, int row, int col, ItemCategory category, int tier)
 
 void test_screen_flow()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     start_new_game(game);
     check(game.screen == STORY_SCREEN, "program starts on the story screen");
 
@@ -54,18 +54,18 @@ void test_screen_flow()
     choose_mode(game, RUSH_MODE, 1000);
     check(game.screen == PLAYING_SCREEN, "choosing a mode starts gameplay immediately");
     check(game.mode == RUSH_MODE, "chosen mode is stored");
-    check(game.orderStartedAt == 1000, "timer starts when the mode starts");
+    check(game.order_started_at == 1000, "timer starts when the mode starts");
 
     show_mode_menu(game);
     check(game.screen == MODE_MENU, "Back returns to the mode menu (not the story)");
 
     choose_mode(game, RECIPE_MODE, 2000);
-    check(game.screen == PLAYING_SCREEN && game.movesLeft == 12, "choosing another mode starts it immediately with its own settings");
+    check(game.screen == PLAYING_SCREEN && game.moves_left == 12, "choosing another mode starts it immediately with its own settings");
 }
 
 void test_generators()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, BEGINNER_MODE, 0);
 
     check(generate_item(game, DOUGH), "dough generator succeeds");
@@ -75,12 +75,12 @@ void test_generators()
     check(generate_item(game, CAKE), "cake generator succeeds");
     check(count_items(game) == 3, "three generator clicks give three items");
 
-    bool allTierZero = true;
+    bool all_tier_zero = true;
     for (int row = 0; row < GRID_SIZE; row++)
         for (int col = 0; col < GRID_SIZE; col++)
             if (game.board[row][col].category != NO_ITEM && game.board[row][col].tier != 0)
-                allTierZero = false;
-    check(allTierZero, "new items start at tier 0");
+                all_tier_zero = false;
+    check(all_tier_zero, "new items start at tier 0");
 
     for (int i = 0; i < 13; i++)
         generate_item(game, DOUGH);
@@ -90,7 +90,7 @@ void test_generators()
 
 void test_move_and_merge()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, CLASSIC_MODE, 0);
 
     place(game, 0, 0, DOUGH, 0);
@@ -112,7 +112,7 @@ void test_move_and_merge()
 }
 
 // Remove every food from the board so a test starts from a known position.
-void empty_board(GameState &game)
+void empty_board(game_state &game)
 {
     for (int row = 0; row < 4; row++)
     {
@@ -126,13 +126,13 @@ void empty_board(GameState &game)
 
 // Finish the current Beginner/Classic/Rush order by merging two foods
 // that are one tier lower than the tier the customer asked for.
-void finish_current_order(GameState &game, unsigned int now)
+void finish_current_order(game_state &game, unsigned int now)
 {
-    ItemCategory food = current_order_category(game);
+    item_category food = current_order_category(game);
     int tier = current_order_tier(game);
 
     empty_board(game);
-    game.deliveredCount = current_order_quantity(game) - 1;
+    game.delivered_count = current_order_quantity(game) - 1;
     place(game, 0, 0, food, tier - 1);
     place(game, 0, 1, food, tier - 1);
     select_or_move_cake(game, 0, 0, now);
@@ -140,15 +140,15 @@ void finish_current_order(GameState &game, unsigned int now)
 }
 
 // Move one food from one square to another empty square.
-void move_food(GameState &game, int fromRow, int fromColumn, int toRow, int toColumn)
+void move_food(game_state &game, int from_row, int from_column, int to_row, int to_column)
 {
-    select_or_move_cake(game, fromRow, fromColumn, 0);
-    select_or_move_cake(game, toRow, toColumn, 0);
+    select_or_move_cake(game, from_row, from_column, 0);
+    select_or_move_cake(game, to_row, to_column, 0);
 }
 
 void test_order_complete()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, BEGINNER_MODE, 0);
 
     // First order needs one tier 2 dough. Merge two tier 1 dough to make it.
@@ -156,30 +156,30 @@ void test_order_complete()
     place(game, 0, 1, DOUGH, 1);
     select_or_move_cake(game, 0, 0, 0);
     select_or_move_cake(game, 0, 1, 0);
-    check(game.orderJustCompleted, "making the ordered item completes the order");
+    check(game.order_just_completed, "making the ordered item completes the order");
     check(game.score == 120, "completed order adds the order bonus plus merge score");
 }
 
 void test_recipe_rejects_higher_tier()
 {
-    GameState game = GameState();
+    game_state game = game_state();
     choose_mode(game, RECIPE_MODE, 0);
 
     game.orders[0].category = DOUGH;
     game.orders[0].tier = 1;
     game.orders[0].quantity = 1;
-    game.orders[0].secondaryCategory = CAKE;
-    game.orders[0].secondaryTier = 1;
-    game.orders[0].secondaryQuantity = 1;
-    game.orders[0].moveLimit = 24;
-    game.movesLeft = 24;
+    game.orders[0].secondary_category = CAKE;
+    game.orders[0].secondary_tier = 1;
+    game.orders[0].secondary_quantity = 1;
+    game.orders[0].move_limit = 24;
+    game.moves_left = 24;
 
     empty_board(game);
     place(game, 0, 0, DOUGH, 1);
     place(game, 0, 1, DOUGH, 1);
     select_or_move_cake(game, 0, 0, 0);
     select_or_move_cake(game, 0, 1, 0);
-    check(game.recipeFirstDelivered == 0 && !game.orderJustCompleted,
+    check(game.recipe_first_delivered == 0 && !game.order_just_completed,
           "a higher-tier merge does not satisfy a lower-tier recipe item");
 
     empty_board(game);
@@ -187,21 +187,21 @@ void test_recipe_rejects_higher_tier()
     place(game, 0, 1, DOUGH, 0);
     select_or_move_cake(game, 0, 0, 0);
     select_or_move_cake(game, 0, 1, 0);
-    check(game.recipeFirstDelivered == 1 && !game.orderJustCompleted,
+    check(game.recipe_first_delivered == 1 && !game.order_just_completed,
           "an exact-tier recipe merge advances only its matching item");
 }
 
 void test_recipe_food_collection_delay()
 {
-    GameState game = GameState();
+    game_state game = game_state();
     choose_mode(game, RECIPE_MODE, 0);
 
     game.orders[0].category = DOUGH;
     game.orders[0].tier = 1;
     game.orders[0].quantity = 1;
-    game.orders[0].secondaryCategory = CAKE;
-    game.orders[0].secondaryTier = 1;
-    game.orders[0].secondaryQuantity = 1;
+    game.orders[0].secondary_category = CAKE;
+    game.orders[0].secondary_tier = 1;
+    game.orders[0].secondary_quantity = 1;
 
     empty_board(game);
     place(game, 0, 0, DOUGH, 0);
@@ -209,21 +209,21 @@ void test_recipe_food_collection_delay()
     select_or_move_cake(game, 0, 0, 2000);
     select_or_move_cake(game, 0, 1, 2000);
 
-    check(game.recipeFirstDelivered == 1 && !game.orderJustCompleted,
+    check(game.recipe_first_delivered == 1 && !game.order_just_completed,
           "Recipe Challenge counts one matching requirement independently");
-    check(game.board[0][1].category == DOUGH && game.recipeFoodPending[0][1],
+    check(game.board[0][1].category == DOUGH && game.recipe_food_pending[0][1],
           "delivered recipe food remains visible during collection delay");
 
-    int movesAfterDelivery = game.moves;
+    int moves_after_delivery = game.moves;
     select_or_move_cake(game, 0, 1, 2500);
-    check(game.board[0][1].category == DOUGH && game.moves == movesAfterDelivery,
+    check(game.board[0][1].category == DOUGH && game.moves == moves_after_delivery,
           "food being collected cannot be selected or merged again");
 
     update_game(game, 2000 + ORDER_COMPLETE_MESSAGE_TIME - 1);
     check(game.board[0][1].category == DOUGH,
           "recipe food remains until the normal one-second collection time");
     update_game(game, 2000 + ORDER_COMPLETE_MESSAGE_TIME);
-    check(game.board[0][1].category == NO_ITEM && !game.recipeFoodPending[0][1],
+    check(game.board[0][1].category == NO_ITEM && !game.recipe_food_pending[0][1],
           "recipe food is collected after the normal one-second delay");
 }
 
@@ -236,40 +236,89 @@ void test_beginner_has_no_high_mark()
 }
 void test_customer_leaving()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, BEGINNER_MODE, 0);
 
     finish_current_order(game, 1000);
-    check(game.orderJustCompleted && game.screen == PLAYING_SCREEN, "finished order starts the customer transition");
-    check(game.orderIndex == 0, "order number stays the same until the next customer arrives");
+    check(game.order_just_completed && game.screen == PLAYING_SCREEN, "finished order starts the customer transition");
+    check(game.order_index == 0, "order number stays the same until the next customer arrives");
     check(!customer_has_left(game, 1500), "customer is still shown during the Order complete message");
     check(customer_has_left(game, 1000 + ORDER_COMPLETE_MESSAGE_TIME), "customer has left after the message");
 
     // The board is locked, so no second order can be completed by accident.
-    int movesBefore = game.moves;
+    int moves_before = game.moves;
     empty_board(game);
     place(game, 2, 0, DOUGH, 0);
     place(game, 2, 1, DOUGH, 0);
     select_or_move_cake(game, 2, 0, 1200);
     select_or_move_cake(game, 2, 1, 1200);
     check(game.board[2][0].category == DOUGH && game.board[2][1].category == DOUGH,"board is locked while the customer is leaving");
-    check(game.moves == movesBefore, "locked clicks do not count as moves");
+    check(game.moves == moves_before, "locked clicks do not count as moves");
 
     update_game(game, 1000 + CUSTOMER_TRANSITION_TIME - 1);
-    check(game.orderJustCompleted && game.orderIndex == 0, "next customer does not arrive too early");
+    check(game.order_just_completed && game.order_index == 0, "next customer does not arrive too early");
 
     update_game(game, 1000 + CUSTOMER_TRANSITION_TIME);
-    check(!game.orderJustCompleted && game.orderIndex == 1, "next customer arrives with the next order");
-    check(game.deliveredCount == 0, "new order starts with no progress");
+    check(!game.order_just_completed && game.order_index == 1, "next customer arrives with the next order");
+    check(game.delivered_count == 0, "new order starts with no progress");
 
     select_or_move_cake(game, 2, 0, 5000);
     select_or_move_cake(game, 2, 1, 5000);
     check(game.board[2][1].tier == 1, "board works again for the next customer");
 }
 
+void test_prebuilt_items_count_for_all_modes()
+{
+    game_mode modes[4] = {BEGINNER_MODE, CLASSIC_MODE, RUSH_MODE, RECIPE_MODE};
+    for (int mode_index = 0; mode_index < 4; mode_index++)
+    {
+        game_state game = game_state();
+        choose_mode(game, modes[mode_index], 1000);
+
+        game.order_index = 0;
+        game.order_just_completed = true;
+        game.order_completed_at = 1000;
+        game.served_food_removed = true;
+        game.orders[1].category = TART;
+        game.orders[1].tier = 2;
+        game.orders[1].quantity = 1;
+
+        place(game, 0, 0, TART, 1); // Wrong level must not count.
+        place(game, 0, 1, TART, 2); // Prepared exact match for the next order.
+
+        if (modes[mode_index] == RECIPE_MODE)
+        {
+            game.orders[1].secondary_category = CAKE;
+            game.orders[1].secondary_tier = 1;
+            game.orders[1].secondary_quantity = 1;
+            game.orders[1].move_limit = 16;
+            place(game, 1, 0, CAKE, 0); // Wrong level must not count.
+            place(game, 1, 1, CAKE, 1); // Prepared exact match for the second requirement.
+        }
+
+        update_game(game, 1000 + CUSTOMER_TRANSITION_TIME);
+
+        if (modes[mode_index] == RECIPE_MODE)
+        {
+            check(game.order_index == 1 && game.recipe_first_delivered == 1 &&
+                      game.recipe_second_delivered == 1 && game.order_just_completed,
+                  "Recipe Challenge counts prepared exact matches when the next customer arrives");
+            check(game.recipe_food_pending[0][1] && game.recipe_food_pending[1][1] &&
+                      game.board[0][0].category == TART && game.board[1][0].category == CAKE,
+                  "Recipe Challenge delays collection and ignores prepared items at the wrong level");
+        }
+        else
+        {
+            check(game.order_index == 1 && game.delivered_count == 1 && game.order_just_completed,
+                  "Beginner, Classic Bakery and Rush Hour count a prepared exact match on arrival");
+            check(game.board[0][1].category == TART && game.board[0][0].category == TART,
+                  "regular modes keep prepared food visible during customer acknowledgement");
+        }
+    }
+}
 void test_final_order_wins()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, CLASSIC_MODE, 0);
     unsigned int now = 0;
 
@@ -279,11 +328,11 @@ void test_final_order_wins()
         update_game(game, now + CUSTOMER_TRANSITION_TIME);
         now += 10000;
     }
-    check(game.orderIndex == order_count_for_mode(game.mode) - 1 && game.screen == PLAYING_SCREEN, "first two orders each bring a new customer");
+    check(game.order_index == order_count_for_mode(game.mode) - 1 && game.screen == PLAYING_SCREEN, "first two orders each bring a new customer");
 
     finish_current_order(game, now);
     check(game.screen == WON_SCREEN, "final order shows the win screen");
-    check(!game.orderJustCompleted, "final order has no customer transition");
+    check(!game.order_just_completed, "final order has no customer transition");
 }
 
 void test_rush_hour_timer()
@@ -292,7 +341,7 @@ void test_rush_hour_timer()
     check(CUSTOMER_HEART_TIME == 10000, "a heart fades every 10 seconds");
     check(MAX_HEARTS * CUSTOMER_HEART_TIME == ORDER_TIME_LIMIT, "three hearts last exactly one order");
 
-    GameState game = GameState();
+    game_state game = game_state();
     choose_mode(game, RUSH_MODE, 0);
     check(game.satisfaction == 3, "Rush Hour customer starts with three hearts");
     check(current_order_time_left(game, 5000) == 25000, "timer counts down from 30 seconds");
@@ -309,7 +358,7 @@ void test_rush_hour_timer()
     update_game(game, 29999);
     check(game.screen == PLAYING_SCREEN && game.satisfaction == 1, "customer waits for the full 30 seconds");
     update_game(game, ORDER_TIME_LIMIT);
-    check(game.screen == GAME_OVER_SCREEN && game.lostByTimer, "customer leaves at 30 seconds and the game is over");
+    check(game.screen == GAME_OVER_SCREEN && game.lost_by_timer, "customer leaves at 30 seconds and the game is over");
 
     // Hearts and timer are frozen while the customer is leaving.
     choose_mode(game, RUSH_MODE, 0);
@@ -333,9 +382,9 @@ void test_rush_hour_timer()
 
 void test_recipe_move_limit()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, RECIPE_MODE, 0);
-    int limit = game.movesLeft;
+    int limit = game.moves_left;
     check(limit == 12, "Recipe Challenge starts with 12 moves for the first customer");
 
     empty_board(game);
@@ -347,37 +396,37 @@ void test_recipe_move_limit()
         else
             move_food(game, 0, 1, 0, 0);
     }
-    check(game.movesLeft == 1 && game.screen == PLAYING_SCREEN, "moves are counted down while the game continues");
+    check(game.moves_left == 1 && game.screen == PLAYING_SCREEN, "moves are counted down while the game continues");
 
     if ((limit - 1) % 2 == 0)
         move_food(game, 0, 0, 0, 1);
     else
         move_food(game, 0, 1, 0, 0);
-    check(game.screen == GAME_OVER_SCREEN && game.lostByMoveLimit, "using the last move without finishing the recipe ends the game");
+    check(game.screen == GAME_OVER_SCREEN && game.lost_by_move_limit, "using the last move without finishing the recipe ends the game");
 
     // Finishing the order on the very last move must not end the game.
     choose_mode(game, RECIPE_MODE, 0);
     empty_board(game);
-    game.movesLeft = 1;
-    game.recipeFirstDelivered = current_order_quantity(game) - 1;
-    game.recipeSecondDelivered = current_order_secondary_quantity(game);
+    game.moves_left = 1;
+    game.recipe_first_delivered = current_order_quantity(game) - 1;
+    game.recipe_second_delivered = current_order_secondary_quantity(game);
     place(game, 0, 0, current_order_category(game), current_order_tier(game) - 1);
     place(game, 0, 1, current_order_category(game), current_order_tier(game) - 1);
     select_or_move_cake(game, 0, 0, 0);
     select_or_move_cake(game, 0, 1, 0);
-    check(game.orderJustCompleted && game.screen == PLAYING_SCREEN, "finishing an order on the last move is not a loss");
+    check(game.order_just_completed && game.screen == PLAYING_SCREEN, "finishing an order on the last move is not a loss");
     update_game(game, ORDER_COMPLETE_MESSAGE_TIME);
     check(game.board[0][1].category == NO_ITEM, "recipe food disappears when the customer leaves");
 }
 
 void test_served_food_disappears()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, BEGINNER_MODE, 0);
     finish_current_order(game, 1000);
     place(game, 3, 3, TART, 0);   // a food that is not part of the order
 
-    ItemCategory food = current_order_category(game);
+    item_category food = current_order_category(game);
     int tier = current_order_tier(game);
 
     check(game.board[0][1].category == food && game.board[0][1].tier == tier, "ordered food is still on the board while the customer is thanked");
@@ -393,7 +442,7 @@ void test_served_food_disappears()
 // Beginner, Classic and Recipe have no hearts and no timer.
 void test_hearts_only_in_rush_hour()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, BEGINNER_MODE, 0);
     update_game(game, 500000);
     check(game.screen == PLAYING_SCREEN, "Beginner has no timer");
@@ -405,12 +454,12 @@ void test_hearts_only_in_rush_hour()
     choose_mode(game, RECIPE_MODE, 0);
     update_game(game, 500000);
     check(game.screen == PLAYING_SCREEN, "Recipe Challenge has no timer");
-    check(current_move_limit(game) == game.movesLeft, "Recipe Challenge starts with the full move limit");
+    check(current_move_limit(game) == game.moves_left, "Recipe Challenge starts with the full move limit");
 }
 
 void test_back_to_menu()
 {
-    GameState game = GameState();   // every value starts at zero
+    game_state game = game_state();   // every value starts at zero
     choose_mode(game, RUSH_MODE, 0);
     finish_current_order(game, 1000);
 
@@ -418,7 +467,7 @@ void test_back_to_menu()
     check(game.screen == MODE_MENU, "Back returns to the mode menu");
 
     choose_mode(game, BEGINNER_MODE, 2000);
-    check(game.screen == PLAYING_SCREEN && !game.orderJustCompleted && game.orderIndex == 0, "choosing a mode after Back starts a fresh game");
+    check(game.screen == PLAYING_SCREEN && !game.order_just_completed && game.order_index == 0, "choosing a mode after Back starts a fresh game");
 }
 
 void test_utilities()
@@ -480,30 +529,30 @@ void test_layout()
 }
 
 // True when one order has sensible values for the given mode.
-bool order_is_valid(const OrderSpec &order, GameMode mode)
+bool order_is_valid(const order_spec &order, game_mode mode)
 {
     bool ok = is_in_range(order.category, DOUGH, CAKE) &&
               is_in_range(order.tier, 1, MAX_ITEM_TIER) &&
               is_in_range(order.quantity, 1, 2) &&
-              order.moveLimit > 0;
+              order.move_limit > 0;
 
     if (mode == RECIPE_MODE)
     {
-        ok = ok && is_in_range(order.secondaryCategory, DOUGH, CAKE) &&
-             order.secondaryCategory != order.category &&
-             is_in_range(order.secondaryTier, 1, MAX_ITEM_TIER) &&
-             is_in_range(order.secondaryQuantity, 1, 2);
+        ok = ok && is_in_range(order.secondary_category, DOUGH, CAKE) &&
+             order.secondary_category != order.category &&
+             is_in_range(order.secondary_tier, 1, MAX_ITEM_TIER) &&
+             is_in_range(order.secondary_quantity, 1, 2);
     }
     else
     {
-        ok = ok && order.secondaryCategory == NO_ITEM && order.secondaryQuantity == 0;
+        ok = ok && order.secondary_category == NO_ITEM && order.secondary_quantity == 0;
     }
 
     return ok;
 }
 
 // Each of the three orders asks for a different food category.
-bool orders_use_each_category_once(const GameState &game)
+bool orders_use_each_category_once(const game_state &game)
 {
     int seen[4] = {0, 0, 0, 0};
 
@@ -517,23 +566,23 @@ bool orders_use_each_category_once(const GameState &game)
 // every possible result is valid, never that two runs differ.
 void test_random_orders()
 {
-    GameMode modes[3] = {CLASSIC_MODE, RUSH_MODE, RECIPE_MODE};
+    game_mode modes[3] = {CLASSIC_MODE, RUSH_MODE, RECIPE_MODE};
     string names[3] = {"Classic Bakery", "Rush Hour", "Recipe Challenge"};
 
     for (int m = 0; m < 3; m++)
     {
-        bool allValid = true;
-        bool eachCategoryOnce = true;
-        bool oldOrdersReplaced = true;
-        bool movesMatchFirstOrder = true;
-        bool rushAlwaysOne = true;
-        bool sawOne = false;
-        bool sawTwo = false;
-        bool firstOrderSeen[4] = {false, false, false, false};
+        bool all_valid = true;
+        bool each_category_once = true;
+        bool old_orders_replaced = true;
+        bool moves_match_first_order = true;
+        bool rush_always_one = true;
+        bool saw_one = false;
+        bool saw_two = false;
+        bool first_order_seen[4] = {false, false, false, false};
 
         for (int attempt = 0; attempt < 200; attempt++)
         {
-            GameState game = GameState();
+            game_state game = game_state();
             choose_mode(game, modes[m], 0);
 
             // Damage the orders, then start the mode again: it must make a fresh set.
@@ -546,37 +595,37 @@ void test_random_orders()
 
             for (int i = 0; i < order_count_for_mode(modes[m]); i++)
             {
-                if (!order_is_valid(game.orders[i], modes[m])) allValid = false;
-                if (game.orders[i].quantity == 99 || game.orders[i].tier == -5) oldOrdersReplaced = false;
-                if (modes[m] == RUSH_MODE && game.orders[i].quantity != 1) rushAlwaysOne = false;
-                if (game.orders[i].quantity == 1) sawOne = true;
-                if (game.orders[i].quantity == 2) sawTwo = true;
+                if (!order_is_valid(game.orders[i], modes[m])) all_valid = false;
+                if (game.orders[i].quantity == 99 || game.orders[i].tier == -5) old_orders_replaced = false;
+                if (modes[m] == RUSH_MODE && game.orders[i].quantity != 1) rush_always_one = false;
+                if (game.orders[i].quantity == 1) saw_one = true;
+                if (game.orders[i].quantity == 2) saw_two = true;
             }
 
-            firstOrderSeen[game.orders[0].category] = true;
-            if (!orders_use_each_category_once(game)) eachCategoryOnce = false;
-            if (modes[m] == RECIPE_MODE && game.movesLeft != game.orders[0].moveLimit) movesMatchFirstOrder = false;
+            first_order_seen[game.orders[0].category] = true;
+            if (!orders_use_each_category_once(game)) each_category_once = false;
+            if (modes[m] == RECIPE_MODE && game.moves_left != game.orders[0].move_limit) moves_match_first_order = false;
         }
 
-        check(allValid, names[m] + ": every random order has valid values");
-        check(oldOrdersReplaced, names[m] + ": starting the mode makes a fresh set of orders");
-        check(eachCategoryOnce, names[m] + ": the three orders use each food once");
-        check(firstOrderSeen[DOUGH] && firstOrderSeen[TART] && firstOrderSeen[CAKE],
+        check(all_valid, names[m] + ": every random order has valid values");
+        check(old_orders_replaced, names[m] + ": starting the mode makes a fresh set of orders");
+        check(each_category_once, names[m] + ": the three orders use each food once");
+        check(first_order_seen[DOUGH] && first_order_seen[TART] && first_order_seen[CAKE],
               names[m] + ": any food can be the first order (fair shuffle)");
 
         if (modes[m] == RUSH_MODE)
-            check(rushAlwaysOne, "Rush Hour orders ask for one item");
+            check(rush_always_one, "Rush Hour orders ask for one item");
         if (modes[m] == CLASSIC_MODE)
         {
             check(order_count_for_mode(CLASSIC_MODE) == 5, "Classic Bakery serves five customers");
-            check(sawOne && sawTwo, "Classic Bakery orders can ask for one or two items");
+            check(saw_one && saw_two, "Classic Bakery orders can ask for one or two items");
         }
         if (modes[m] == RECIPE_MODE)
-            check(movesMatchFirstOrder, "Recipe Challenge starts with the first order's move limit");
+            check(moves_match_first_order, "Recipe Challenge starts with the first order's move limit");
     }
 
     // Beginner mode is the guided mode, so its orders never change.
-    GameState game = GameState();
+    game_state game = game_state();
     choose_mode(game, BEGINNER_MODE, 0);
     check(game.orders[0].category == DOUGH && game.orders[1].category == TART && game.orders[2].category == CAKE,
           "Beginner orders are always dough, tart, cake");
@@ -586,26 +635,26 @@ void test_random_orders()
 
 void test_item_tiers_and_random_squares()
 {
-    GameState game = GameState();
+    game_state game = game_state();
     choose_mode(game, BEGINNER_MODE, 0);
 
     // Sixteen generator clicks must fill all sixteen squares (every empty square can be chosen).
     int created = 0;
-    bool tiersOk = true;
+    bool tiers_ok = true;
     for (int i = 0; i < 16; i++)
     {
-        if (generate_item(game, (ItemCategory)(DOUGH + i % 3))) created++;
+        if (generate_item(game, (item_category)(DOUGH + i % 3))) created++;
     }
     for (int row = 0; row < 4; row++)
     {
         for (int col = 0; col < 4; col++)
         {
             if (game.board[row][col].category == NO_ITEM) created--;
-            if (!is_in_range(game.board[row][col].tier, 0, MAX_ITEM_TIER)) tiersOk = false;
+            if (!is_in_range(game.board[row][col].tier, 0, MAX_ITEM_TIER)) tiers_ok = false;
         }
     }
     check(created == 16, "sixteen generator clicks fill the whole board");
-    check(tiersOk, "generated items stay within the tier limit");
+    check(tiers_ok, "generated items stay within the tier limit");
     check(!generate_item(game, DOUGH), "a full board does not accept another item");
 
     // When only one square is empty, that square must be the one chosen.
@@ -615,8 +664,8 @@ void test_item_tiers_and_random_squares()
 
     // With two empty squares, either of them can be chosen
     // (over 100 tries both are seen; the chance of missing one is far too small to matter).
-    bool sawFirstSquare = false;
-    bool sawSecondSquare = false;
+    bool saw_first_square = false;
+    bool saw_second_square = false;
     for (int attempt = 0; attempt < 100; attempt++)
     {
         empty_board(game);
@@ -626,10 +675,10 @@ void test_item_tiers_and_random_squares()
         game.board[0][0].category = NO_ITEM;
         game.board[3][3].category = NO_ITEM;
         generate_item(game, TART);
-        if (game.board[0][0].category == TART) sawFirstSquare = true;
-        if (game.board[3][3].category == TART) sawSecondSquare = true;
+        if (game.board[0][0].category == TART) saw_first_square = true;
+        if (game.board[3][3].category == TART) saw_second_square = true;
     }
-    check(sawFirstSquare && sawSecondSquare, "every empty square can be chosen, including the last one");
+    check(saw_first_square && saw_second_square, "every empty square can be chosen, including the last one");
 
     // Two foods already at the top tier cannot merge into a tier that has no picture.
     empty_board(game);
@@ -642,96 +691,96 @@ void test_item_tiers_and_random_squares()
           "top-tier foods do not merge any further");
 
     // Random play in every mode never creates a tier outside 0 to MAX_ITEM_TIER.
-    GameMode modes[4] = {BEGINNER_MODE, CLASSIC_MODE, RUSH_MODE, RECIPE_MODE};
-    bool allInRange = true;
+    game_mode modes[4] = {BEGINNER_MODE, CLASSIC_MODE, RUSH_MODE, RECIPE_MODE};
+    bool all_in_range = true;
     for (int m = 0; m < 4; m++)
     {
         choose_mode(game, modes[m], 0);
         for (int step = 0; step < 1500; step++)
         {
-            if (step % 3 == 0) generate_item(game, (ItemCategory)(DOUGH + rnd(3)));
+            if (step % 3 == 0) generate_item(game, (item_category)(DOUGH + rnd(3)));
             select_or_move_cake(game, rnd(4), rnd(4), 0);
             update_game(game, 0);
             if (game.screen != PLAYING_SCREEN) choose_mode(game, modes[m], 0);
 
             for (int row = 0; row < 4; row++)
                 for (int col = 0; col < 4; col++)
-                    if (!is_in_range(game.board[row][col].tier, 0, MAX_ITEM_TIER)) allInRange = false;
+                    if (!is_in_range(game.board[row][col].tier, 0, MAX_ITEM_TIER)) all_in_range = false;
         }
     }
-    check(allInRange, "random play never makes a tier above MAX_ITEM_TIER");
+    check(all_in_range, "random play never makes a tier above MAX_ITEM_TIER");
 }
 
 void test_settings_switches()
 {
-    GameState game = GameState();
+    game_state game = game_state();
     start_new_game(game);
-    check(game.musicOn && game.soundEffectsOn, "music and sound effects both start ON");
-    check(!game.settingsOpen, "settings panel starts closed");
+    check(game.music_on && game.sound_effects_on, "music and sound effects both start ON");
+    check(!game.settings_open, "settings panel starts closed");
 
     toggle_music(game);
-    check(!game.musicOn && game.soundEffectsOn, "turning music off leaves sound effects on");
+    check(!game.music_on && game.sound_effects_on, "turning music off leaves sound effects on");
     toggle_sound_effects(game);
-    check(!game.musicOn && !game.soundEffectsOn, "both can be off at the same time");
+    check(!game.music_on && !game.sound_effects_on, "both can be off at the same time");
     toggle_music(game);
-    check(game.musicOn && !game.soundEffectsOn, "turning music on leaves sound effects off");
+    check(game.music_on && !game.sound_effects_on, "turning music on leaves sound effects off");
     toggle_sound_effects(game);
-    check(game.musicOn && game.soundEffectsOn, "both can be back on");
+    check(game.music_on && game.sound_effects_on, "both can be back on");
 
     open_settings(game);
-    check(game.settingsOpen, "open_settings shows the panel");
+    check(game.settings_open, "open_settings shows the panel");
     close_settings(game);
-    check(!game.settingsOpen, "close_settings hides the panel");
+    check(!game.settings_open, "close_settings hides the panel");
 
     // Settings stay until the player changes them.
     toggle_music(game);   // music off, effects on
     show_mode_menu(game);
-    check(!game.musicOn && game.soundEffectsOn, "settings survive going back to the menu");
+    check(!game.music_on && game.sound_effects_on, "settings survive going back to the menu");
     choose_mode(game, RUSH_MODE, 0);
     game.screen = GAME_OVER_SCREEN;
     show_mode_menu(game);
     choose_mode(game, RECIPE_MODE, 0);
-    check(!game.musicOn && game.soundEffectsOn, "settings survive a whole round");
+    check(!game.music_on && game.sound_effects_on, "settings survive a whole round");
 
     open_settings(game);
     show_mode_menu(game);
-    check(!game.settingsOpen, "returning to the menu closes the panel");
+    check(!game.settings_open, "returning to the menu closes the panel");
 }
 
 // Click on the settings button, switches and Close button the way a player would.
-void click(GameState &game, int x, int y)
+void click(game_state &game, int x, int y)
 {
     handle_mouse_click(game, x, y, 0);
 }
 
 void test_settings_panel_clicks()
 {
-    GameState game = GameState();
+    game_state game = game_state();
     start_new_game(game);
     show_mode_menu(game);
 
     click(game, SETTINGS_BUTTON_X + 5, SETTINGS_BUTTON_Y + 5);
-    check(game.settingsOpen && game.screen == MODE_MENU, "Settings button opens the panel");
+    check(game.settings_open && game.screen == MODE_MENU, "Settings button opens the panel");
 
     click(game, SETTINGS_TOGGLE_X + 10, SETTINGS_MUSIC_Y + 10);
-    check(!game.musicOn && game.soundEffectsOn, "music switch only changes music");
+    check(!game.music_on && game.sound_effects_on, "music switch only changes music");
     click(game, SETTINGS_TOGGLE_X + 10, SETTINGS_EFFECTS_Y + 10);
-    check(!game.musicOn && !game.soundEffectsOn, "effects switch only changes sound effects");
+    check(!game.music_on && !game.sound_effects_on, "effects switch only changes sound effects");
     click(game, SETTINGS_TOGGLE_X + 10, SETTINGS_MUSIC_Y + 10);
-    check(game.musicOn && !game.soundEffectsOn, "music can be switched back on by itself");
+    check(game.music_on && !game.sound_effects_on, "music can be switched back on by itself");
 
     // While the panel is open the mode cards behind it cannot be clicked.
     click(game, MODE_LEFT_X + 10, MODE_TOP_Y + 10);
     click(game, SETTINGS_BOX_X - 5, SETTINGS_BOX_Y - 5);
-    check(game.screen == MODE_MENU && game.settingsOpen, "clicks outside the panel do nothing");
+    check(game.screen == MODE_MENU && game.settings_open, "clicks outside the panel do nothing");
 
     click(game, SETTINGS_CLOSE_X + 10, SETTINGS_CLOSE_Y + 10);
-    check(!game.settingsOpen && game.screen == MODE_MENU, "Close button hides the panel");
-    check(game.musicOn && !game.soundEffectsOn, "closing the panel keeps the settings");
+    check(!game.settings_open && game.screen == MODE_MENU, "Close button hides the panel");
+    check(game.music_on && !game.sound_effects_on, "closing the panel keeps the settings");
 
     click(game, MODE_LEFT_X + 10, MODE_TOP_Y + 10);
     check(game.screen == PLAYING_SCREEN && game.mode == BEGINNER_MODE, "mode cards work again after closing");
-    check(game.musicOn && !game.soundEffectsOn, "settings are unchanged during play");
+    check(game.music_on && !game.sound_effects_on, "settings are unchanged during play");
 }
 
 int main()
@@ -748,6 +797,7 @@ int main()
     test_recipe_food_collection_delay();
     test_beginner_has_no_high_mark();
     test_customer_leaving();
+    test_prebuilt_items_count_for_all_modes();
     test_final_order_wins();
     test_rush_hour_timer();
     test_recipe_move_limit();

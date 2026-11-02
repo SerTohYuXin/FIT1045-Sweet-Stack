@@ -7,7 +7,7 @@ static const int MODE_COUNT = 3;
 static int high_scores[MODE_COUNT] = {0, 0, 0};
 static bool scores_loaded = false;
 
-static int mode_index(GameMode mode)
+static int mode_index(game_mode mode)
 {
     // Beginner has a fixed learning recipe and does not keep a high mark.
     switch (mode)
@@ -46,14 +46,14 @@ static void save_high_scores()
         output << high_scores[i] << '\n';
 }
 
-int high_score_for_mode(GameMode mode)
+int high_score_for_mode(game_mode mode)
 {
     load_high_scores();
     int index = mode_index(mode);
     return (index < 0) ? 0 : high_scores[index];
 }
 
-bool record_high_score(GameMode mode, int score)
+bool record_high_score(game_mode mode, int score)
 {
     load_high_scores();
     int index = mode_index(mode);

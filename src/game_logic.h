@@ -22,23 +22,23 @@ const unsigned int CUSTOMER_HEART_TIME = 10000;
 const unsigned int CUSTOMER_TRANSITION_TIME = 1600;
 
 // Change screens, update timers and handle cake movement and merging.
-void advance_screen(GameState &game, unsigned int now);
-void update_game(GameState &game, unsigned int now);
-void toggle_pause(GameState &game, unsigned int now);
-void select_or_move_cake(GameState &game, int row, int column, unsigned int now);
+void advance_screen(game_state &game, unsigned int now);
+void update_game(game_state &game, unsigned int now);
+void toggle_pause(game_state &game, unsigned int now);
+void select_or_move_cake(game_state &game, int row, int column, unsigned int now);
 
 // Return the current order requirements for the user interface.
-int current_order_tier(const GameState &game);
-int current_order_quantity(const GameState &game);
-int current_order_secondary_tier(const GameState &game);
-int current_order_secondary_quantity(const GameState &game);
-unsigned int current_order_time_left(const GameState &game, unsigned int now);
+int current_order_tier(const game_state &game);
+int current_order_quantity(const game_state &game);
+int current_order_secondary_tier(const game_state &game);
+int current_order_secondary_quantity(const game_state &game);
+unsigned int current_order_time_left(const game_state &game, unsigned int now);
 
 // After an order is finished the customer leaves, then the next one arrives.
 // True once the "Order complete" message is over and the customer has gone.
 // Recipe Challenge: how many moves the current order allows in total.
-int current_move_limit(const GameState &game);
+int current_move_limit(const game_state &game);
 
-bool customer_has_left(const GameState &game, unsigned int now);
+bool customer_has_left(const game_state &game, unsigned int now);
 
 #endif

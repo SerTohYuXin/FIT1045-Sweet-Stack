@@ -12,7 +12,7 @@ const int CLASSIC_ORDER_COUNT = 5;
 const int MAX_ORDER_COUNT = CLASSIC_ORDER_COUNT;
 
 // Each food chain has its own category.
-enum ItemCategory
+enum item_category
 {
     NO_ITEM,
     DOUGH,
@@ -21,7 +21,7 @@ enum ItemCategory
 };
 
 // Screens and game modes.
-enum GameMode 
+enum game_mode 
 { 
     BEGINNER_MODE, 
     CLASSIC_MODE, 
@@ -29,9 +29,9 @@ enum GameMode
     RECIPE_MODE 
 };
 
-int order_count_for_mode(GameMode mode);
+int order_count_for_mode(game_mode mode);
 
-enum ScreenState
+enum screen_state
 {
     MODE_MENU,
     STORY_SCREEN,
@@ -41,74 +41,74 @@ enum ScreenState
 };
 
 // A board square stores both the food category and its tier.
-struct BoardItem
+struct board_item
 {
-    ItemCategory category;
+    item_category category;
     int tier;
 };
 
-struct OrderSpec
+struct order_spec
 {
-    ItemCategory category;
+    item_category category;
     int tier;
     int quantity;
-    ItemCategory secondaryCategory;
-    int secondaryTier;
-    int secondaryQuantity;
-    int moveLimit;
+    item_category secondary_category;
+    int secondary_tier;
+    int secondary_quantity;
+    int move_limit;
 };
 
-struct GameState
+struct game_state
 {
     // A square with category NO_ITEM is empty.
-    BoardItem board[GRID_SIZE][GRID_SIZE];
-    int selectedRow, selectedColumn;
-    int score, moves, orderIndex, deliveredCount, satisfaction;
-    int recipeFirstDelivered, recipeSecondDelivered, movesLeft;
-    OrderSpec orders[MAX_ORDER_COUNT];
-    unsigned int orderStartedAt;
-    string lastAction;
+    board_item board[GRID_SIZE][GRID_SIZE];
+    int selected_row, selected_column;
+    int score, moves, order_index, delivered_count, satisfaction;
+    int recipe_first_delivered, recipe_second_delivered, moves_left;
+    order_spec orders[MAX_ORDER_COUNT];
+    unsigned int order_started_at;
+    string last_action;
 
-    GameMode mode;
-    ScreenState screen;
+    game_mode mode;
+    screen_state screen;
 
-    int storyLine;
-    bool lostByTimer, lostByMoveLimit, lowTimeAlertPlayed;
+    int story_line;
+    bool lost_by_timer, lost_by_move_limit, low_time_alert_played;
 
     // True while "Order complete" is showing and the customer is leaving.
     // The board is locked and the Rush Hour timer is paused until it ends.
-    bool orderJustCompleted;
+    bool order_just_completed;
     bool paused;
-    unsigned int pausedAt;
-    unsigned int orderCompletedAt;
-    bool servedFoodRemoved;   // true once the served food has been taken off the board
-    bool recipeFoodPending[GRID_SIZE][GRID_SIZE];
-    unsigned int recipeFoodDeliveredAt[GRID_SIZE][GRID_SIZE];
+    unsigned int paused_at;
+    unsigned int order_completed_at;
+    bool served_food_removed;   // true once the served food has been taken off the board
+    bool recipe_food_pending[GRID_SIZE][GRID_SIZE];
+    unsigned int recipe_food_delivered_at[GRID_SIZE][GRID_SIZE];
 
     // Player settings. Starting a new round does NOT reset these, so they
     // stay the same until the player changes them.
-    bool musicOn;
-    bool soundEffectsOn;
-    bool settingsOpen;        // true while the settings panel is showing
-    bool newHighScore;        // true when this round sets a new local record
-    bool resultRecorded;      // prevents saving the same round more than once
+    bool music_on;
+    bool sound_effects_on;
+    bool settings_open;        // true while the settings panel is showing
+    bool new_high_score;        // true when this round sets a new local record
+    bool result_recorded;      // prevents saving the same round more than once
 };
 
 // Program start: reset everything and show the story first.
-void start_new_game(GameState &game);
+void start_new_game(game_state &game);
 // Reset everything and show the four-mode selection screen.
-void show_mode_menu(GameState &game);
+void show_mode_menu(game_state &game);
 // Start the chosen mode's gameplay immediately.
-void choose_mode(GameState &game, GameMode mode, unsigned int now);
-ItemCategory current_order_category(const GameState &game);
-ItemCategory current_order_secondary_category(const GameState &game);
-bool generate_item(GameState &game, ItemCategory category);
+void choose_mode(game_state &game, game_mode mode, unsigned int now);
+item_category current_order_category(const game_state &game);
+item_category current_order_secondary_category(const game_state &game);
+bool generate_item(game_state &game, item_category category);
 
 // Settings panel on the mode-selection screen. Music and sound effects
 // are two separate switches.
-void open_settings(GameState &game);
-void close_settings(GameState &game);
-void toggle_music(GameState &game);
-void toggle_sound_effects(GameState &game);
+void open_settings(game_state &game);
+void close_settings(game_state &game);
+void toggle_music(game_state &game);
+void toggle_sound_effects(game_state &game);
 
 #endif

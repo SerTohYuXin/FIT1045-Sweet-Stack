@@ -5,7 +5,7 @@
 #include "splashkit.h"
 #include "game_state.h"
 
-void draw_game(const GameState &game, unsigned int now);
+void draw_game(const game_state &game, unsigned int now);
 void load_game_art();
 
 #endif
