@@ -26,17 +26,23 @@ void stop_story_voice()
     stop_sound_effect("story_mia_invitation");
 }
 
-void play_story_voice(const game_state &game, int story_line)
+void play_story_voice(const game_state &game, story_line_state story_line)
 {
     stop_story_voice();
     if (!game.sound_effects_on) return;
 
-    if (story_line == 0)
-        play_sound_effect("story_mia_intro", 0.85);
-    else if (story_line == 1)
-        play_sound_effect("story_festival_guest", 0.85);
-    else if (story_line == 2)
-        play_sound_effect("story_mia_invitation", 0.85);
+    switch (story_line)
+    {
+        case MIA_INTRO_LINE:
+            play_sound_effect("story_mia_intro", 0.85);
+            break;
+        case FESTIVAL_GUEST_LINE:
+            play_sound_effect("story_festival_guest", 0.85);
+            break;
+        case MIA_INVITATION_LINE:
+            play_sound_effect("story_mia_invitation", 0.85);
+            break;
+    }
 }
 
 // Play one effect, but only when the player has sound effects switched on.

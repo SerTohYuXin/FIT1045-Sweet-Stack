@@ -40,6 +40,14 @@ enum screen_state
     GAME_OVER_SCREEN
 };
 
+// The three dialogue pages shown before the mode menu.
+enum story_line_state
+{
+    MIA_INTRO_LINE,
+    FESTIVAL_GUEST_LINE,
+    MIA_INVITATION_LINE
+};
+
 // A board square stores both the food category and its tier.
 struct board_item
 {
@@ -72,7 +80,7 @@ struct game_state
     game_mode mode;
     screen_state screen;
 
-    int story_line;
+    story_line_state story_line;
     bool lost_by_timer, lost_by_move_limit, low_time_alert_played;
 
     // True while "Order complete" is showing and the customer is leaving.

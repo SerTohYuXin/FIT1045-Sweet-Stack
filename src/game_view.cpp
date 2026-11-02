@@ -272,42 +272,41 @@ static void draw_story(const game_state &game)
 {
     draw_header("A little story before baking");
 
-    if (game.story_line == 1)
-    {
-        draw_character("customer_story_1", 52, 212);
-    }
-    else
-    {
-        draw_character("shop_owner", 52, 212);
-    }
-
-    // Name plate under the speaker, so the player knows who is talking.
+    // Choose the portrait and name plate for the current speaker.
     string speaker = "MIA - SHOP OWNER";
-    if (game.story_line == 1)
-        speaker = "FESTIVAL GUEST";
+    switch (game.story_line)
+    {
+        case FESTIVAL_GUEST_LINE:
+            draw_character("customer_story_1", 52, 212);
+            speaker = "FESTIVAL GUEST";
+            break;
+        case MIA_INTRO_LINE:
+        case MIA_INVITATION_LINE:
+            draw_character("shop_owner", 52, 212);
+            break;
+    }
 
-    draw_game_text(speaker, rgb(121, 69, 84),
-        centered_ui_text_x(speaker, STORY_NAME_X, STORY_NAME_WIDTH), STORY_NAME_Y + 5);
+    draw_game_text(speaker, rgb(121, 69, 84), centered_ui_text_x(speaker, STORY_NAME_X, STORY_NAME_WIDTH), STORY_NAME_Y + 5);
 
     fill_rectangle(rgb(255, 255, 255), 295, 232, 570, 184);
     draw_rectangle(rgb(231, 207, 207), 295, 232, 570, 184);
     draw_game_text("Mia's Moonlight Bakery", rgb(121, 69, 84), 325, 253);
 
-    if (game.story_line == 0)
+    switch (game.story_line)
     {
-        draw_game_text("Mia: Hi, I'm Mia, the baker who runs this shop.", rgb(91, 78, 82), 325, 289);
-        draw_game_text("The Moonlight Festival is tonight!", rgb(91, 78, 82), 325, 325);
-        draw_game_text("Our bakery has just reopened.", rgb(91, 78, 82), 325, 358);
-    }
-    else if (game.story_line == 1)
-    {
-        draw_game_text("Customer: We need treats for the festival.", rgb(91, 78, 82), 325, 299);
-        draw_game_text("Can you help us prepare the orders?", rgb(91, 78, 82), 325, 330);
-    }
-    else
-    {
-        draw_game_text("Mia: Choose your challenge and let's bake!", rgb(91, 78, 82), 325, 299);
-        draw_game_text("Every successful recipe helps the festival.", rgb(91, 78, 82), 325, 330);
+        case MIA_INTRO_LINE:
+            draw_game_text("Mia: Hi, I'm Mia, the baker who runs this shop.", rgb(91, 78, 82), 325, 289);
+            draw_game_text("The Moonlight Festival is tonight!", rgb(91, 78, 82), 325, 325);
+            draw_game_text("Our bakery has just reopened.", rgb(91, 78, 82), 325, 358);
+            break;
+        case FESTIVAL_GUEST_LINE:
+            draw_game_text("Customer: We need treats for the festival.", rgb(91, 78, 82), 325, 299);
+            draw_game_text("Can you help us prepare the orders?", rgb(91, 78, 82), 325, 330);
+            break;
+        case MIA_INVITATION_LINE:
+            draw_game_text("Mia: Choose your challenge and let's bake!", rgb(91, 78, 82), 325, 299);
+            draw_game_text("Every successful recipe helps the festival.", rgb(91, 78, 82), 325, 330);
+            break;
     }
 
     fill_rectangle(rgb(121, 69, 84), 390, 482, 180, 54);
@@ -725,20 +724,20 @@ void draw_game(const game_state &game, unsigned int now)
     clear_screen(rgb(255, 247, 241));
     // The background picture is already 960 x 700, the same size as the window.
     draw_bitmap("bakery_background", 0, 0);
-    if (game.screen == MODE_MENU)
+    switch (game.screen)
     {
-        draw_menu(game);
-    }
-    else if (game.screen == STORY_SCREEN)
-    {
-        draw_story(game);
-    }
-    else if (game.screen == PLAYING_SCREEN)
-    {
-        draw_play(game, now);
-    }
-    else
-    {
-        draw_end(game);
+        case MODE_MENU:
+            draw_menu(game);
+            break;
+        case STORY_SCREEN:
+            draw_story(game);
+            break;
+        case PLAYING_SCREEN:
+            draw_play(game, now);
+            break;
+        case WON_SCREEN:
+        case GAME_OVER_SCREEN:
+            draw_end(game);
+            break;
     }
 }

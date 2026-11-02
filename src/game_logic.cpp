@@ -19,10 +19,18 @@ void advance_screen(game_state &game, unsigned int now)
 
     if (game.screen == STORY_SCREEN)
     {
-        if (game.story_line < 2)
-            game.story_line++;
-        else
-            show_mode_menu(game);
+        switch (game.story_line)
+        {
+            case MIA_INTRO_LINE:
+                game.story_line = FESTIVAL_GUEST_LINE;
+                break;
+            case FESTIVAL_GUEST_LINE:
+                game.story_line = MIA_INVITATION_LINE;
+                break;
+            case MIA_INVITATION_LINE:
+                show_mode_menu(game);
+                break;
+        }
     }
     else if (game.screen == WON_SCREEN || game.screen == GAME_OVER_SCREEN)
     {

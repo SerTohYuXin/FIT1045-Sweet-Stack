@@ -6,7 +6,7 @@
 #include "game_state.h"
 
 void load_game_sounds();
-void play_story_voice(const game_state &game, int story_line);
+void play_story_voice(const game_state &game, story_line_state story_line);
 void stop_story_voice();
 void load_background_music();
 void play_background_music();

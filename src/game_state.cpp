@@ -27,36 +27,50 @@ static void shuffled_categories(item_category categories[3])
 static void setup_orders(game_state &game, game_mode mode)
 {
     item_category categories[3];
-    if (mode == BEGINNER_MODE)
+    switch (mode)
     {
-        categories[0] = DOUGH;
-        categories[1] = TART;
-        categories[2] = CAKE;
-    }
-    else
-    {
-        shuffled_categories(categories);
+        case BEGINNER_MODE:
+            categories[0] = DOUGH;
+            categories[1] = TART;
+            categories[2] = CAKE;
+            break;
+        case CLASSIC_MODE:
+        case RUSH_MODE:
+        case RECIPE_MODE:
+            shuffled_categories(categories);
+            break;
     }
 
     for (int i = 0; i < order_count_for_mode(mode); i++)
     {
         order_spec &order = game.orders[i];
-        order.category = (mode == BEGINNER_MODE) ? (item_category)(DOUGH + i) : categories[i % ORDER_COUNT];
-        order.tier = (mode == BEGINNER_MODE) ? ((i == 2) ? 3 : 2) : 1 + rnd(2);
+        order.category = categories[i % ORDER_COUNT];
         order.quantity = 1;
         order.secondary_category = NO_ITEM;
         order.secondary_tier = -1;
         order.secondary_quantity = 0;
         order.move_limit = 12 + i * 4;
 
-        if (mode == CLASSIC_MODE)
-            order.quantity = 1 + rnd(2);   // 1 or 2 items
-        else if (mode == RECIPE_MODE)
+        switch (mode)
         {
-            order.quantity = 1 + rnd(2);   // 1 or 2 items of the first food
-            order.secondary_category = categories[(i + 1) % ORDER_COUNT];
-            order.secondary_tier = 1 + rnd(2);
-            order.secondary_quantity = 1;
+            case BEGINNER_MODE:
+                order.category = (item_category)(DOUGH + i);
+                order.tier = (i == 2) ? 3 : 2;
+                break;
+            case CLASSIC_MODE:
+                order.tier = 1 + rnd(2);
+                order.quantity = 1 + rnd(2);   // 1 or 2 items
+                break;
+            case RUSH_MODE:
+                order.tier = 1 + rnd(2);
+                break;
+            case RECIPE_MODE:
+                order.tier = 1 + rnd(2);
+                order.quantity = 1 + rnd(2);   // 1 or 2 items of the first food
+                order.secondary_category = categories[(i + 1) % ORDER_COUNT];
+                order.secondary_tier = 1 + rnd(2);
+                order.secondary_quantity = 1;
+                break;
         }
     }
 }
@@ -88,7 +102,7 @@ static void reset_round(game_state &game)
     game.recipe_first_delivered = 0;
     game.recipe_second_delivered = 0;
     game.moves_left = 0;
-    game.story_line = 0;
+    game.story_line = MIA_INTRO_LINE;
     game.order_started_at = 0;
     game.lost_by_timer = false;
     game.lost_by_move_limit = false;

@@ -1,0 +1,169 @@
+PASS: number_text of 0
+PASS: number_text of 1250
+PASS: 5 is inside 1 to 10
+PASS: range includes both ends
+PASS: values outside the range are rejected
+PASS: text width is estimated per character
+PASS: text is centred in a box
+PASS: top-left corner is inside a rectangle
+PASS: bottom-right pixel is inside a rectangle
+PASS: just right of a rectangle is outside
+PASS: just left of a rectangle is outside
+PASS: board size matches cells and gaps
+PASS: generator buttons start below the board
+PASS: generator buttons fit inside the window
+PASS: dough and tart buttons do not overlap
+PASS: tart and cake buttons do not overlap
+PASS: buttons are no wider than the board
+PASS: food picture is centred in its square
+PASS: generator icon fits inside its button
+PASS: board does not overlap the right-hand panels
+PASS: customer box does not overlap the order box
+PASS: order box fits inside the window
+PASS: Back button fits inside the window
+PASS: longest mode-card line fits its card
+PASS: recipe order line fits the order box
+PASS: order-complete message fits the order box
+PASS: end-screen hint fits its panel
+PASS: mode cards fit inside the window
+PASS: Settings button fits inside the window
+PASS: settings panel fits inside the window
+PASS: ON/OFF buttons fit inside the panel
+PASS: the two switches do not overlap
+PASS: Close button is below the switches
+PASS: Close button fits inside the panel
+PASS: music label does not touch its button
+PASS: settings hint fits the panel
+PASS: story introduction fits the dialogue box
+PASS: name plate fits under the portrait
+PASS: name plate does not cover the portrait
+PASS: program starts on the story screen
+PASS: story is still showing before the last line is finished
+PASS: finishing the story shows the mode menu
+PASS: choosing a mode starts gameplay immediately
+PASS: chosen mode is stored
+PASS: timer starts when the mode starts
+PASS: Back returns to the mode menu (not the story)
+PASS: choosing another mode starts it immediately with its own settings
+PASS: dough generator succeeds
+PASS: dough generator adds exactly one item
+PASS: tart generator succeeds
+PASS: cake generator succeeds
+PASS: three generator clicks give three items
+PASS: new items start at tier 0
+PASS: board can be filled completely
+PASS: generator fails when the board is full
+PASS: item moves into an empty square
+PASS: a move is counted
+PASS: two matching items merge into a higher tier
+PASS: merge adds score
+PASS: different foods do not merge
+PASS: making the ordered item completes the order
+PASS: completed order adds the order bonus plus merge score
+PASS: a higher-tier merge does not satisfy a lower-tier recipe item
+PASS: an exact-tier recipe merge advances only its matching item
+PASS: Recipe Challenge counts one matching requirement independently
+PASS: delivered recipe food remains visible during collection delay
+PASS: food being collected cannot be selected or merged again
+PASS: recipe food remains until the normal one-second collection time
+PASS: recipe food is collected after the normal one-second delay
+PASS: Beginner does not display a personal highest mark
+PASS: Beginner scores are not recorded as personal highest marks
+PASS: finished order starts the customer transition
+PASS: order number stays the same until the next customer arrives
+PASS: customer is still shown during the Order complete message
+PASS: customer has left after the message
+PASS: board is locked while the customer is leaving
+PASS: locked clicks do not count as moves
+PASS: next customer does not arrive too early
+PASS: next customer arrives with the next order
+PASS: new order starts with no progress
+PASS: board works again for the next customer
+PASS: Beginner, Classic Bakery and Rush Hour count a prepared exact match on arrival
+PASS: regular modes keep prepared food visible during customer acknowledgement
+PASS: Beginner, Classic Bakery and Rush Hour count a prepared exact match on arrival
+PASS: regular modes keep prepared food visible during customer acknowledgement
+PASS: Beginner, Classic Bakery and Rush Hour count a prepared exact match on arrival
+PASS: regular modes keep prepared food visible during customer acknowledgement
+PASS: Recipe Challenge counts prepared exact matches when the next customer arrives
+PASS: Recipe Challenge delays collection and ignores prepared items at the wrong level
+PASS: first two orders each bring a new customer
+PASS: final order shows the win screen
+PASS: final order has no customer transition
+PASS: Rush Hour gives each customer 30 seconds
+PASS: a heart fades every 10 seconds
+PASS: three hearts last exactly one order
+PASS: Rush Hour customer starts with three hearts
+PASS: timer counts down from 30 seconds
+PASS: still three hearts just before 10 seconds
+PASS: first heart is lost at 10 seconds
+PASS: still two hearts just before 20 seconds
+PASS: second heart is lost at 20 seconds
+PASS: customer waits for the full 30 seconds
+PASS: customer leaves at 30 seconds and the game is over
+PASS: customer keeps the hearts they had when served
+PASS: hearts do not change while the customer is leaving
+PASS: timer is frozen during the transition
+PASS: no game over while the customer is leaving
+PASS: next customer starts with three hearts
+PASS: next customer gets a full timer
+PASS: Recipe Challenge starts with 12 moves for the first customer
+PASS: moves are counted down while the game continues
+PASS: using the last move without finishing the recipe ends the game
+PASS: finishing an order on the last move is not a loss
+PASS: recipe food disappears when the customer leaves
+PASS: ordered food is still on the board while the customer is thanked
+PASS: food stays until the customer leaves
+PASS: ordered food disappears when the customer leaves
+PASS: other foods stay on the board
+PASS: Beginner has no timer
+PASS: Classic Bakery has no timer
+PASS: Recipe Challenge has no timer
+PASS: Recipe Challenge starts with the full move limit
+PASS: Back returns to the mode menu
+PASS: choosing a mode after Back starts a fresh game
+PASS: Classic Bakery: every random order has valid values
+PASS: Classic Bakery: starting the mode makes a fresh set of orders
+PASS: Classic Bakery: the three orders use each food once
+PASS: Classic Bakery: any food can be the first order (fair shuffle)
+PASS: Classic Bakery serves five customers
+PASS: Classic Bakery orders can ask for one or two items
+PASS: Rush Hour: every random order has valid values
+PASS: Rush Hour: starting the mode makes a fresh set of orders
+PASS: Rush Hour: the three orders use each food once
+PASS: Rush Hour: any food can be the first order (fair shuffle)
+PASS: Rush Hour orders ask for one item
+PASS: Recipe Challenge: every random order has valid values
+PASS: Recipe Challenge: starting the mode makes a fresh set of orders
+PASS: Recipe Challenge: the three orders use each food once
+PASS: Recipe Challenge: any food can be the first order (fair shuffle)
+PASS: Recipe Challenge starts with the first order's move limit
+PASS: Beginner orders are always dough, tart, cake
+PASS: Beginner order tiers are fixed
+PASS: sixteen generator clicks fill the whole board
+PASS: generated items stay within the tier limit
+PASS: a full board does not accept another item
+PASS: the only empty square is always chosen
+PASS: every empty square can be chosen, including the last one
+PASS: top-tier foods do not merge any further
+PASS: random play never makes a tier above MAX_ITEM_TIER
+PASS: music and sound effects both start ON
+PASS: settings panel starts closed
+PASS: turning music off leaves sound effects on
+PASS: both can be off at the same time
+PASS: turning music on leaves sound effects off
+PASS: both can be back on
+PASS: open_settings shows the panel
+PASS: close_settings hides the panel
+PASS: settings survive going back to the menu
+PASS: settings survive a whole round
+PASS: returning to the menu closes the panel
+PASS: Settings button opens the panel
+PASS: music switch only changes music
+PASS: effects switch only changes sound effects
+PASS: music can be switched back on by itself
+PASS: clicks outside the panel do nothing
+PASS: Close button hides the panel
+PASS: closing the panel keeps the settings
+PASS: mode cards work again after closing
+PASS: settings are unchanged during play
