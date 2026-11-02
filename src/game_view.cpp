@@ -555,8 +555,7 @@ static void draw_status_panel(const GameState &game, unsigned int now)
             timerColour = rgb(221, 94, 103);
 
         draw_bar(timerColour, textX, STATUS_BOX_Y + 86, (double)left / ORDER_TIME_LIMIT);
-        draw_game_text(number_text(left / 1000) + " seconds left",
-            rgb(91, 78, 82), textX, STATUS_BOX_Y + 112);
+        draw_game_text(number_text(left / 1000) + " seconds left", rgb(91, 78, 82), textX, STATUS_BOX_Y + 112);
     }
     else if (game.mode == RECIPE_MODE)
     {
@@ -598,8 +597,7 @@ static void draw_selection_panel(const GameState &game)
             neededTier = current_order_secondary_tier(game);
 
         if (neededTier >= 0)
-            draw_game_text("Order needs level " + number_text(neededTier + 1) + ".",
-                rgb(126, 116, 116), RIGHT_X + 126, 554);
+            draw_game_text("Order needs level " + number_text(neededTier + 1) + ".", rgb(126, 116, 116), RIGHT_X + 126, 554);
         else
             draw_game_text("Not part of this order.", rgb(126, 116, 116), RIGHT_X + 126, 554);
     }
@@ -610,8 +608,7 @@ static void draw_selection_panel(const GameState &game)
     else
     {
         draw_game_text("Nothing selected.", rgb(91, 78, 82), RIGHT_X + 20, 522);
-        draw_game_text("Click a food tile on the tray to inspect it.",
-            rgb(126, 116, 116), RIGHT_X + 20, 550);
+        draw_game_text("Click a food tile on the tray to inspect it.", rgb(126, 116, 116), RIGHT_X + 20, 550);
     }
 }
 
@@ -627,11 +624,9 @@ static void draw_play(const GameState &game, unsigned int now)
     draw_game_text("SCORE  " + number_text(game.score), rgb(121, 69, 84), 690, 25);
     draw_game_text("MOVES  " + number_text(game.moves), rgb(121, 69, 84), 690, 66);
 
-    fill_rectangle(rgb(121, 69, 84), PAUSE_BUTTON_X, PAUSE_BUTTON_Y,
-        PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT);
+    fill_rectangle(rgb(121, 69, 84), PAUSE_BUTTON_X, PAUSE_BUTTON_Y, PAUSE_BUTTON_WIDTH, PAUSE_BUTTON_HEIGHT);
     string pauseLabel = game.paused ? "RESUME" : "PAUSE";
-    draw_game_text(pauseLabel, rgb(255, 255, 255),
-        centered_ui_text_x(pauseLabel, PAUSE_BUTTON_X, PAUSE_BUTTON_WIDTH), PAUSE_BUTTON_Y + 10);
+    draw_game_text(pauseLabel, rgb(255, 255, 255), centered_ui_text_x(pauseLabel, PAUSE_BUTTON_X, PAUSE_BUTTON_WIDTH), PAUSE_BUTTON_Y + 10);
 
     draw_game_text("BAKERY TRAY", rgb(121, 69, 84), BOARD_X, 130);
 
@@ -665,14 +660,10 @@ static void draw_play(const GameState &game, unsigned int now)
     if (game.paused)
     {
         fill_rectangle(rgba_color(54, 42, 47, 155), 0, 112, WINDOW_WIDTH, WINDOW_HEIGHT - 112);
-        fill_rectangle(rgb(255, 247, 241), PAUSE_PANEL_X, PAUSE_PANEL_Y,
-            PAUSE_PANEL_WIDTH, PAUSE_PANEL_HEIGHT);
-        draw_rectangle(rgb(211, 93, 127), PAUSE_PANEL_X, PAUSE_PANEL_Y,
-            PAUSE_PANEL_WIDTH, PAUSE_PANEL_HEIGHT);
-        draw_game_text("PAUSED", rgb(121, 69, 84),
-            centered_ui_text_x("PAUSED", PAUSE_PANEL_X, PAUSE_PANEL_WIDTH), PAUSE_PANEL_Y + 32);
-        draw_game_text("Click RESUME or press P to continue.", rgb(91, 78, 82),
-            centered_ui_text_x("Click RESUME or press P to continue.", PAUSE_PANEL_X, PAUSE_PANEL_WIDTH), PAUSE_PANEL_Y + 78);
+        fill_rectangle(rgb(255, 247, 241), PAUSE_PANEL_X, PAUSE_PANEL_Y, PAUSE_PANEL_WIDTH, PAUSE_PANEL_HEIGHT);
+        draw_rectangle(rgb(211, 93, 127), PAUSE_PANEL_X, PAUSE_PANEL_Y, PAUSE_PANEL_WIDTH, PAUSE_PANEL_HEIGHT);
+        draw_game_text("PAUSED", rgb(121, 69, 84), centered_ui_text_x("PAUSED", PAUSE_PANEL_X, PAUSE_PANEL_WIDTH), PAUSE_PANEL_Y + 32);
+        draw_game_text("Click RESUME or press P to continue.", rgb(91, 78, 82), centered_ui_text_x("Click RESUME or press P to continue.", PAUSE_PANEL_X, PAUSE_PANEL_WIDTH), PAUSE_PANEL_Y + 78);
     }
 }
 
@@ -720,19 +711,13 @@ static void draw_end(const GameState &game)
             draw_end_line("Personal highest mark: " + number_text(high_score_for_mode(game.mode)), rgb(146, 109, 116), END_BOX_Y + 157);
     }
 
-    fill_rectangle(rgb(121, 69, 84), END_REPLAY_BUTTON_X, END_BUTTON_Y,
-        END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
-    draw_rectangle(rgb(121, 69, 84), END_REPLAY_BUTTON_X, END_BUTTON_Y,
-        END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
-    draw_game_text("PLAY AGAIN", rgb(255, 255, 255),
-        centered_ui_text_x("PLAY AGAIN", END_REPLAY_BUTTON_X, END_BUTTON_WIDTH), END_BUTTON_Y + 13);
+    fill_rectangle(rgb(121, 69, 84), END_REPLAY_BUTTON_X, END_BUTTON_Y, END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
+    draw_rectangle(rgb(121, 69, 84), END_REPLAY_BUTTON_X, END_BUTTON_Y, END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
+    draw_game_text("PLAY AGAIN", rgb(255, 255, 255), centered_ui_text_x("PLAY AGAIN", END_REPLAY_BUTTON_X, END_BUTTON_WIDTH), END_BUTTON_Y + 13);
 
-    fill_rectangle(rgb(214, 171, 157), END_MENU_BUTTON_X, END_BUTTON_Y,
-        END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
-    draw_rectangle(rgb(214, 171, 157), END_MENU_BUTTON_X, END_BUTTON_Y,
-        END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
-    draw_game_text("BACK TO MENU", rgb(255, 255, 255),
-        centered_ui_text_x("BACK TO MENU", END_MENU_BUTTON_X, END_BUTTON_WIDTH), END_BUTTON_Y + 13);
+    fill_rectangle(rgb(214, 171, 157), END_MENU_BUTTON_X, END_BUTTON_Y, END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
+    draw_rectangle(rgb(214, 171, 157), END_MENU_BUTTON_X, END_BUTTON_Y, END_BUTTON_WIDTH, END_BUTTON_HEIGHT);
+    draw_game_text("BACK TO MENU", rgb(255, 255, 255), centered_ui_text_x("BACK TO MENU", END_MENU_BUTTON_X, END_BUTTON_WIDTH), END_BUTTON_Y + 13);
 }
 
 // Draw the background and whichever screen is currently active.

@@ -1,3 +1,4 @@
+//src/score_manager.cpp
 #include "splashkit.h"
 #include "score_manager.h"
 #include <fstream>
