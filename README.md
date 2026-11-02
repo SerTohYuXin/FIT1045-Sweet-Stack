@@ -149,4 +149,4 @@ SweetStack/
 **Author:** Ser Toh Yu Xin  
 **Student ID:** 36818402  
 **Unit:** FIT1045 Introduction to Programming \
-**GitHub Repository** https://github.com/SerTohYuXin/FIT1045-Sweet-Stack
+**GitHub Repository:** https://github.com/SerTohYuXin/FIT1045-Sweet-Stack
